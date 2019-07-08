@@ -13,13 +13,13 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet publish --output $(System.DefaultWorkingDirectory)/Build
+- script: dotnet publish --output $(System.DefaultWorkingDirectory)/build
   displayName: 'dotnet publish output'
   
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/Build'
-    includeRootFolder: true
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
+    includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
