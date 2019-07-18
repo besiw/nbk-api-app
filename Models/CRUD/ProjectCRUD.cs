@@ -24,20 +24,20 @@ namespace NBKProject.Models.CRUD
             List<Project> Obj = new List<Project>();
             if (PageNo == 0)
             {
-                Obj = dbcontext.Project.ToList();
+                Obj = dbcontext.Project.OrderByDescending(x => x.Id).ToList();
             }
             else if (PageNo > 0)
             {
                 if (PageNo == 1)
                 {
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Take(PageNo).ToList();
+                    Obj = dbcontext.Project.Take(PageNo).OrderByDescending(x => x.Id).ToList();
                 }
                 else
                 {
                     PageNo = PageNo - 1;
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Skip(PageNo).ToList();
+                    Obj = dbcontext.Project.Skip(PageNo).OrderByDescending(x => x.Id).ToList();
                 }
             }
             List<ProjectENT> Data = new List<ProjectENT>();
@@ -62,20 +62,20 @@ namespace NBKProject.Models.CRUD
             List<Project> Obj = new List<Project>();
             if (PageNo == 0)
             {
-                Obj = dbcontext.Project.Where(x=>x.IsDeleted == null && x.IsArchived == null).ToList();
+                Obj = dbcontext.Project.Where(x=>x.IsDeleted == null && x.IsArchived == null).OrderByDescending(x => x.Id).ToList();
             }
             else if (PageNo > 0)
             {
                 if (PageNo == 1)
                 {
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Where(x => x.IsDeleted == null && x.IsArchived == null).Take(PageNo).ToList();
+                    Obj = dbcontext.Project.Where(x => x.IsDeleted == null && x.IsArchived == null).OrderByDescending(x => x.Id).Take(PageNo).ToList();
                 }
                 else
                 {
                     PageNo = PageNo - 1;
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Where(x => x.IsDeleted == null && x.IsArchived == null).Skip(PageNo).ToList();
+                    Obj = dbcontext.Project.Where(x => x.IsDeleted == null && x.IsArchived == null).OrderByDescending(x => x.Id).Skip(PageNo).ToList();
                 }
             }
             List<ProjectENT> Data = new List<ProjectENT>();
@@ -100,20 +100,20 @@ namespace NBKProject.Models.CRUD
             List<Project> Obj = new List<Project>();
             if (PageNo == 0)
             {
-                Obj = dbcontext.Project.Where(x => x.IsArchived == true).ToList();
+                Obj = dbcontext.Project.Where(x => x.IsArchived == true).OrderByDescending(x => x.Id).ToList();
             }
             else if (PageNo > 0)
             {
                 if (PageNo == 1)
                 {
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Where(x => x.IsArchived == true).Take(PageNo).ToList();
+                    Obj = dbcontext.Project.Where(x => x.IsArchived == true).OrderByDescending(x => x.Id).Take(PageNo).ToList();
                 }
                 else
                 {
                     PageNo = PageNo - 1;
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Where(x => x.IsArchived == true).Skip(PageNo).ToList();
+                    Obj = dbcontext.Project.Where(x => x.IsArchived == true).OrderByDescending(x => x.Id).Skip(PageNo).ToList();
                 }
             }
             List<ProjectENT> Data = new List<ProjectENT>();
@@ -138,20 +138,20 @@ namespace NBKProject.Models.CRUD
             List<Project> Obj = new List<Project>();
             if (PageNo == 0)
             {
-                Obj = dbcontext.Project.Where(x => x.IsDeleted == true).ToList();
+                Obj = dbcontext.Project.Where(x => x.IsDeleted == true).OrderByDescending(x => x.Id).ToList();
             }
             else if (PageNo > 0)
             {
                 if (PageNo == 1)
                 {
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Where(x => x.IsDeleted == true).Take(PageNo).ToList();
+                    Obj = dbcontext.Project.Where(x => x.IsDeleted == true).OrderByDescending(x=>x.Id).Take(PageNo).OrderByDescending(x => x.Id).ToList();
                 }
                 else
                 {
                     PageNo = PageNo - 1;
                     PageNo = PageNo * 10;
-                    Obj = dbcontext.Project.Where(x => x.IsDeleted == true).Skip(PageNo).ToList();
+                    Obj = dbcontext.Project.Where(x => x.IsDeleted == true).Skip(PageNo).OrderByDescending(x => x.Id).ToList();
                 }
             }
             List<ProjectENT> Data = new List<ProjectENT>();
