@@ -33,16 +33,29 @@ namespace NBKProject.Entities
         public bool? IsDefault { get; set; }
         public int ServiceSelectedID { get; set; }
 
-        [Required(ErrorMessage = "{0} is required")]
-        public List<ChecklistItemTemplate> ChecklistItemTemplateList { get; set; }
-        public Service CheckListAttchedWithService { get; set; }
+        //[Required(ErrorMessage = "{0} is required")]
+        public List<ChecklistItemTemplateENT> ChecklistItemTemplateList { get; set; }
+        public ServiceItemTemplateENT CheckListAttchedWithService { get; set; }
 
     }
 
-    public partial class ChecklistItemTemplateENT
+    public class ChecklistItemTemplateENT
     {
         public int Id { get; set; }
         public int? ChecklistId { get; set; }
         public string Title { get; set; }
+    }
+
+    public class ServiceItemTemplateENT
+    {
+        
+        public int Id { get; set; }
+        public int? ServiceTypeId { get; set; }
+        public string Name { get; set; }
+        public string Rate { get; set; }
+        public string Description { get; set; }
+        public int? ServiceChargedAs { get; set; }
+        public int? ChecklistTempId { get; set; }
+        
     }
 }

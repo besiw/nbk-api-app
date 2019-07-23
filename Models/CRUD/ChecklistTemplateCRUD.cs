@@ -28,8 +28,26 @@ namespace NBKProject.Models.CRUD
                 Id = Obj.Id,
                 Title = Obj.Title,
                 IsDefault = Obj.IsDefault,
-                ChecklistItemTemplateList = ChecklistItemTemplateList,
-                CheckListAttchedWithService = CheckListAttchedWithService
+                ChecklistItemTemplateList = new List<ChecklistItemTemplateENT>
+                (
+                    ChecklistItemTemplateList.Select(j => new ChecklistItemTemplateENT
+                    {
+                        Id = j.Id,
+                        ChecklistId = j.ChecklistId,
+                        Title = j.Title
+                    })
+                    ),
+                CheckListAttchedWithService = new ServiceItemTemplateENT()
+                {
+                    Id = CheckListAttchedWithService.Id,
+                    ChecklistTempId = CheckListAttchedWithService.ChecklistTempId,
+                    Description = CheckListAttchedWithService.Description,
+                    Name = CheckListAttchedWithService.Name,
+                    Rate = CheckListAttchedWithService.Rate,
+                    ServiceChargedAs = CheckListAttchedWithService.ServiceChargedAs,
+                    ServiceTypeId = CheckListAttchedWithService.ServiceTypeId
+                }
+                
             };
             return Data;
 
@@ -91,9 +109,27 @@ namespace NBKProject.Models.CRUD
                 Id = i.Id,
                 Title = i.Title,
                 IsDefault = i.IsDefault,
-                ChecklistItemTemplateList = dbcontext.ChecklistItemTemplate.Where(x => x.ChecklistId == i.Id).ToList(),
-                CheckListAttchedWithService = dbcontext.Service.Where(x => x.ChecklistTempId == i.Id).FirstOrDefault()
-        }));
+                ChecklistItemTemplateList = new List<ChecklistItemTemplateENT>
+                (
+                    dbcontext.ChecklistItemTemplate.Where(x => x.ChecklistId == i.Id).Select(j => new ChecklistItemTemplateENT
+                    {                        
+                        Id = j.Id,
+                        ChecklistId = j.ChecklistId,
+                        Title = j.Title
+                    })
+                    ),
+                CheckListAttchedWithService = dbcontext.Service.Where(x => x.ChecklistTempId == i.Id).Select(j => new ServiceItemTemplateENT
+                {
+                    Id = j.Id,
+                    ChecklistTempId = j.ChecklistTempId,
+                    Description = j.Description,
+                    Name = j.Name,
+                    Rate = j.Rate,
+                    ServiceChargedAs = j.ServiceChargedAs,
+                    ServiceTypeId = j.ServiceTypeId
+                }).FirstOrDefault()
+                
+            }));
 
             
 
