@@ -6,9 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove=".vscode\**" />
     <Compile Remove="Data\**" />
+    <Content Remove=".vscode\**" />
     <Content Remove="Data\**" />
+    <EmbeddedResource Remove=".vscode\**" />
     <EmbeddedResource Remove="Data\**" />
+    <None Remove=".vscode\**" />
     <None Remove="Data\**" />
   </ItemGroup>
 
