@@ -44,12 +44,25 @@ namespace NBKProject.Services
             return data;
         }
 
-        public RequestResponse DeleteSingleBuildingSupplier(int id)
+        public ResponseBuildingSupplier DeleteSingleBuildingSupplier(int id)
         {
+            ResponseBuildingSupplier ResponseBuildingSupplierObj = new ResponseBuildingSupplier();
             RequestResponse RequestResponse = new RequestResponse();
             try
             {
-                new BuildingSupplierCRUD().DeleteSingle(id);
+                ResponseBuildingSupplierObj.ProjectAsociatedWithBuildingSupplier = new BuildingSupplierCRUD().DeleteSingle(id);
+                
+                if (ResponseBuildingSupplierObj.ProjectAsociatedWithBuildingSupplier != null)
+                {
+                    if (ResponseBuildingSupplierObj.ProjectAsociatedWithBuildingSupplier.Count > 0)
+                    {
+                        RequestResponse.Message = "Can not delete. Building supplier is asociated with project";
+                        RequestResponse.Success = false;
+                        ResponseBuildingSupplierObj.RequestResponse = RequestResponse;
+                        return ResponseBuildingSupplierObj;
+                    }
+                }
+                
                 RequestResponse.Message = "Record deleted";
                 RequestResponse.Success = true;
             }
@@ -58,8 +71,8 @@ namespace NBKProject.Services
                 RequestResponse.Message = ex.Message;
                 RequestResponse.Success = false;
             }
-
-            return RequestResponse;
+            ResponseBuildingSupplierObj.RequestResponse = RequestResponse;
+            return ResponseBuildingSupplierObj;
         }
     }
 }

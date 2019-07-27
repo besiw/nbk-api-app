@@ -31,4 +31,14 @@ namespace NBKProject.Entities
         [Required(ErrorMessage = "{0} is required")]
         public string Title { get; set; }
     }
+    public class ProjectAsociatedWithBuildingSup
+    {
+        public int  Id { get; set; }
+        public string Title { get; set; }
+    }
+    public class ResponseBuildingSupplier
+    {
+        public RequestResponse RequestResponse { get; set; }
+        public List<ProjectAsociatedWithBuildingSup> ProjectAsociatedWithBuildingSupplier { get; set; }
+    }
 }

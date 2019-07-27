@@ -43,12 +43,26 @@ namespace NBKProject.Models.CRUD
             return Data;
         }
 
-        public void DeleteSingle(int Id)
+        public List<ProjectAsociatedWithBuildingSup> DeleteSingle(int Id)
         {
+            List<ProjectAsociatedWithBuildingSup> Projects = new List<ProjectAsociatedWithBuildingSup>();
             NbkDbEntities dbcontext = new NbkDbEntities();
+            #region Check if it is used in any project already
+            Projects.AddRange(dbcontext.Project.Where(x => x.BuildingSupplierId == Id).Select(x => new ProjectAsociatedWithBuildingSup { Id = x.Id, Title = x.Title }).ToList());
+            if(Projects != null)
+            {
+                if(Projects.Count > 0)
+                {
+                    return Projects;
+                }
+            }            
+            #endregion
+
+            dbcontext = new NbkDbEntities();
             BuildingSupplierTemplate Obj = dbcontext.BuildingSupplierTemplate.Where(x => x.Id == Id).FirstOrDefault();
             dbcontext.BuildingSupplierTemplate.Remove(Obj);
             dbcontext.SaveChanges();
+            return Projects;
         }
 
         public BuildingSupplierENT UpdateSelectSingle(BuildingSupplierENT Obj)

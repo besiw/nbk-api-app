@@ -55,10 +55,10 @@ namespace NBKProject.Controllers
             if (isAuthorized.Success == false) return BadRequest(isAuthorized);
             #endregion
 
-            
 
-            RequestResponse RequestResponse = new Services.BuildingSupplierService().DeleteSingleBuildingSupplier(BuildingSupplierID);
-            if (RequestResponse.Success == false) return BadRequest(RequestResponse);
+
+            ResponseBuildingSupplier RequestResponse = new Services.BuildingSupplierService().DeleteSingleBuildingSupplier(BuildingSupplierID);
+            if (RequestResponse.RequestResponse.Success == false) return BadRequest(RequestResponse);
             
             return Ok(RequestResponse);
         }

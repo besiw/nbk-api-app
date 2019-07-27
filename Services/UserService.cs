@@ -47,7 +47,8 @@ namespace NBKProject.Services
                 Id = db.Id,
                 FullName = db.FullName,
                 UserName = db.UserName,
-                Password = db.Password
+                Password = db.Password,
+                IsAdmin = db.IsAdmin
             };
             _users.Add(userobj);
 

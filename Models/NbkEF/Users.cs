@@ -25,6 +25,7 @@ namespace NBKProject.Models.NbkEF
         public DateTime? TokenValidFrom { get; set; }
         public DateTime? TokenValidTo { get; set; }
         public int? ContactId { get; set; }
+        public bool? IsAdmin { get; set; }
 
         public virtual UserType UserType { get; set; }
         public virtual ICollection<Project> Project { get; set; }
