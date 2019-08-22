@@ -42,7 +42,17 @@ namespace NBKProject.Entities
         [Required(ErrorMessage = "{0} is required")]
         public string Rate { get; set; }
 
-        public List<ServicePerSlab> ServicePerSlabList { get; set; }
+        public List<ServicePerSlabENT> ServicePerSlabList { get; set; }
 
+    }
+
+    public class ServicePerSlabENT
+    {
+        public int Id { get; set; }
+        public int? ServiceId { get; set; }
+        public int? RangeFrom { get; set; }
+        public int? RangeTo { get; set; }
+        public string Rate { get; set; }
+        
     }
 }

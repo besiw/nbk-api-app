@@ -21,8 +21,10 @@ namespace NBKProject.Models.CRUD
             NbkDbEntities dbcontext = new NbkDbEntities();
             Service Obj = dbcontext.Service.Where(x => x.Id == Id).FirstOrDefault();
             List<ServicePerSlab> ServicePerSlabList = dbcontext.ServicePerSlab.Where(x => x.ServiceId == Obj.Id).ToList();
-
-            ServiceENT Data = new ServiceENT()
+            List<ServicePerSlabENT> ServicePerSlabListENT = new List<ServicePerSlabENT>();
+            ServicePerSlabListENT.AddRange(ServicePerSlabList.Select(x => new ServicePerSlabENT
+            { Id = x.Id, RangeFrom = x.RangeFrom, RangeTo = x.RangeTo, Rate = x.Rate, ServiceId = x.ServiceId }).ToList());
+           ServiceENT Data = new ServiceENT()
             {
                 Id = Obj.Id,
                 Name = Obj.Name,
@@ -30,8 +32,11 @@ namespace NBKProject.Models.CRUD
                 ServiceTypeId = Obj.ServiceTypeId,
                 ServiceChargedAs = Obj.ServiceChargedAs,
                 Rate = Obj.Rate,
-                ServicePerSlabList = ServicePerSlabList
-            };
+                ServicePerSlabList = ServicePerSlabListENT
+
+           };
+
+            
             return Data;
 
 
@@ -210,7 +215,7 @@ namespace NBKProject.Models.CRUD
             return Obj;
         }
 
-        public void AddServiceRateSlabsList(int id, List<ServicePerSlab> ServicePerSlabList)
+        public void AddServiceRateSlabsList(int id, List<ServicePerSlabENT> ServicePerSlabList)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
             var list = ServicePerSlabList;
