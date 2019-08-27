@@ -21,8 +21,15 @@ namespace NBKProject.Models.CRUD
             NbkDbEntities dbcontext = new NbkDbEntities();
             ChecklistTemplate Obj = dbcontext.ChecklistTemplate.Where(x => x.Id == Id).FirstOrDefault();
             List<ChecklistItemTemplate> ChecklistItemTemplateList = dbcontext.ChecklistItemTemplate.Where(x => x.ChecklistId == Obj.Id).ToList();
+            if(ChecklistItemTemplateList == null)
+            {
+                ChecklistItemTemplateList.Add(new ChecklistItemTemplate()); 
+            }
             Service CheckListAttchedWithService = dbcontext.Service.Where(x => x.ChecklistTempId == Obj.Id).FirstOrDefault();
-
+            if(CheckListAttchedWithService == null)
+            {
+                CheckListAttchedWithService = new Service();
+            }
             ChecklistTemplateENT Data = new ChecklistTemplateENT()
             {
                 Id = Obj.Id,
