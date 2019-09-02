@@ -51,8 +51,8 @@ namespace NBKProject.Models.NbkEF
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 //optionsBuilder.UseSqlServer("Data Source=(local);Database=nbk_Db;Persist Security Info=True;User ID=sa;Password=123;");
                 //Test DB below
-                //optionsBuilder.UseSqlServer("Data Source=182.50.133.110;Database=nbk_Db1;Persist Security Info=True;User ID=nbkUser;Password=nbk@@007;");
-                optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
+                optionsBuilder.UseSqlServer("Data Source=182.50.133.110;Database=nbk_Db1;Persist Security Info=True;User ID=nbkUser;Password=nbk@@007;");
+                //optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
             }
         }
 
