@@ -52,7 +52,10 @@ namespace NBKProject.Models.NbkEF
                 //optionsBuilder.UseSqlServer("Data Source=(local);Database=nbk_Db;Persist Security Info=True;User ID=sa;Password=123;");
                 //Test DB below
                 // optionsBuilder.UseSqlServer("Data Source=182.50.133.110;Database=nbk_Db1;Persist Security Info=True;User ID=nbkUser;Password=nbk@@007;");
-                optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
+                //azure db
+                //optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
+                //amazon test db
+                optionsBuilder.UseSqlServer("Data Source=nbk-db1.c3e125qqptxq.eu-central-1.rds.amazonaws.com,1433;Database=nbk-Db1;Persist Security Info=True;User ID=nbkUser;Password=6DDipFLWBm;");
             }
         }
 
