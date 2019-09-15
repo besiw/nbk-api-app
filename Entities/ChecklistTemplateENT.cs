@@ -24,6 +24,10 @@ namespace NBKProject.Entities
     {
         public List<ChecklistTemplateENT> MultiChecklistTemplate { get; set; }
     }
+    public class WrapperChecklistItemTemplate
+    {
+        public ChecklistItemTemplateENT ChecklistItemTemplate { get; set; }
+    }
     public class ChecklistTemplateENT
     {
         public int Id { get; set; }

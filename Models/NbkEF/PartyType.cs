@@ -17,6 +17,7 @@ namespace NBKProject.Models.NbkEF
         public string Name { get; set; }
         public int? SortOrder { get; set; }
         public bool IsDefault { get; set; }
+        public int? WorkflowCategoryId { get; set; }
 
         public virtual ICollection<Doc> Doc { get; set; }
         public virtual ICollection<DocType> DocType { get; set; }

@@ -23,31 +23,31 @@ namespace NBKProject.Services
             return data;
         }
 
-        public WrapperMultiProject GetAllProjectList(int PageNo)
+        public WrapperMultiProject GetAllProjectList(int EntriesFrom, int EntriesTill)
         {
             WrapperMultiProject data = new WrapperMultiProject();
-            data.MultiProject = new ProjectCRUD().GetAllProjectList(PageNo);
+            data.MultiProject = new ProjectCRUD().GetAllProjectList(EntriesFrom, EntriesTill);
             return data;
         }
 
-        public WrapperMultiProject GetAllProjectListNotArchivedOrDeleted(int PageNo)
+        public WrapperMultiProject GetAllProjectListNotArchivedOrDeleted(int EntriesFrom, int EntriesTill)
         {
             WrapperMultiProject data = new WrapperMultiProject();
-            data.MultiProject = new ProjectCRUD().GetAllProjectListNotArchivedOrDeleted(PageNo);
+            data.MultiProject = new ProjectCRUD().GetAllProjectListNotArchivedOrDeleted(EntriesFrom, EntriesTill);
             return data;
         }
 
-        public WrapperMultiProject GetAllArchivedProjectList(int PageNo)
+        public WrapperMultiProject GetAllArchivedProjectList(int EntriesFrom, int EntriesTill)
         {
             WrapperMultiProject data = new WrapperMultiProject();
-            data.MultiProject = new ProjectCRUD().GetAllArchivedProjectList(PageNo);
+            data.MultiProject = new ProjectCRUD().GetAllArchivedProjectList(EntriesFrom, EntriesTill);
             return data;
         }
 
-        public WrapperMultiProject GetAllDeletedProjectList(int PageNo)
+        public WrapperMultiProject GetAllDeletedProjectList(int EntriesFrom, int EntriesTill)
         {
             WrapperMultiProject data = new WrapperMultiProject();
-            data.MultiProject = new ProjectCRUD().GetAllDeletedProjectList(PageNo);
+            data.MultiProject = new ProjectCRUD().GetAllDeletedProjectList(EntriesFrom, EntriesTill);
             return data;
         }
 

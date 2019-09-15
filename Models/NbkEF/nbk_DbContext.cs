@@ -39,10 +39,14 @@ namespace NBKProject.Models.NbkEF
         public virtual DbSet<ProjectService> ProjectService { get; set; }
         public virtual DbSet<ProjectStatuses> ProjectStatuses { get; set; }
         public virtual DbSet<Service> Service { get; set; }
+        public virtual DbSet<ServiceCategory> ServiceCategory { get; set; }
         public virtual DbSet<ServicePerSlab> ServicePerSlab { get; set; }
         public virtual DbSet<ServiceType> ServiceType { get; set; }
+        public virtual DbSet<ServiceWorkflowCategory> ServiceWorkflowCategory { get; set; }
         public virtual DbSet<UserType> UserType { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<WorkflowCategory> WorkflowCategory { get; set; }
+        public virtual DbSet<WorkflowCategorySteps> WorkflowCategorySteps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -321,6 +325,8 @@ namespace NBKProject.Models.NbkEF
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Name).HasMaxLength(500);
+
+                entity.Property(e => e.WorkflowCategoryId).HasColumnName("WorkflowCategoryID");
             });
 
             modelBuilder.Entity<PostNum>(entity =>
@@ -625,6 +631,13 @@ namespace NBKProject.Models.NbkEF
                     .HasConstraintName("FK_Service_ServiceType");
             });
 
+            modelBuilder.Entity<ServiceCategory>(entity =>
+            {
+                entity.ToTable("ServiceCategory", "nbkUser");
+
+                entity.Property(e => e.Name).HasMaxLength(500);
+            });
+
             modelBuilder.Entity<ServicePerSlab>(entity =>
             {
                 entity.ToTable("ServicePerSlab", "nbkUser");
@@ -644,6 +657,15 @@ namespace NBKProject.Models.NbkEF
                 entity.Property(e => e.SortOrder).HasColumnName("sortOrder");
             });
 
+            modelBuilder.Entity<ServiceWorkflowCategory>(entity =>
+            {
+                entity.ToTable("ServiceWorkflowCategory", "nbkUser");
+
+                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+
+                entity.Property(e => e.WorkflowCategoryId).HasColumnName("WorkflowCategoryID");
+            });
+
             modelBuilder.Entity<UserType>(entity =>
             {
                 entity.ToTable("UserType", "nbkUser");
@@ -658,8 +680,6 @@ namespace NBKProject.Models.NbkEF
                 entity.ToTable("Users", "nbkUser");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.ContactId).HasColumnName("ContactID");
 
                 entity.Property(e => e.ContactNo).HasMaxLength(250);
 
@@ -685,6 +705,24 @@ namespace NBKProject.Models.NbkEF
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.UserTypeId)
                     .HasConstraintName("FK_User_UserType");
+            });
+
+            modelBuilder.Entity<WorkflowCategory>(entity =>
+            {
+                entity.ToTable("WorkflowCategory", "nbkUser");
+
+                entity.Property(e => e.Name).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<WorkflowCategorySteps>(entity =>
+            {
+                entity.ToTable("WorkflowCategorySteps", "nbkUser");
+
+                entity.Property(e => e.StepName)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.WorkflowCategoryId).HasColumnName("WorkflowCategoryID");
             });
         }
     }

@@ -65,7 +65,7 @@ namespace NBKProject.Controllers
 
 
         [HttpPost]
-        public IActionResult CreatChecklistTemplate([FromBody]WrapperChecklistTemplate Param)
+        public IActionResult CreatChecklistTemplateWithItems([FromBody]WrapperChecklistTemplate Param)
         {
             #region Validate Token
             RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
@@ -91,6 +91,21 @@ namespace NBKProject.Controllers
             //ZERO (0) page number means all ChecklistTemplates
             //1 means 1-10 , 2 means 20-30
             WrapperMultiChecklistTemplate data = new Services.ChecklistTemplateService().GetAllChecklistTemplate(PageNo, SearchByName);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        public IActionResult CreatChecklistItemTempByChecklistTempId([FromBody]WrapperChecklistItemTemplate Param)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+
+            WrapperChecklistItemTemplate data = new Services.ChecklistTemplateService().CreateSingleChecklistItemTempByChecklistTempId(Param.ChecklistItemTemplate);
+
             return Ok(data);
         }
     }

@@ -44,6 +44,7 @@ namespace NBKProject.Entities
 
         public List<ServicePerSlabENT> ServicePerSlabList { get; set; }
 
+        public List<ServiceWorkflowCategoryENT> ServiceWorkflowCategory { get; set; }
     }
 
     public class ServicePerSlabENT
@@ -54,5 +55,12 @@ namespace NBKProject.Entities
         public int? RangeTo { get; set; }
         public string Rate { get; set; }
         
+    }
+
+    public class ServiceWorkflowCategoryENT
+    {
+        public int Id { get; set; }
+        public int WorkflowCategoryId { get; set; }
+        public int ServiceId { get; set; }
     }
 }

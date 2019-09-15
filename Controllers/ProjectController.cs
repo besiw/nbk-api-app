@@ -20,7 +20,7 @@ namespace NBKProject.Controllers
     public class ProjectController : ControllerBase
     {
         [HttpGet]
-        public IActionResult GetAllProjectList(int PageNo)
+        public IActionResult GetAllProjectList(int EntriesFrom, int EntriesTill)
         {
             #region Validate Token
             RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
@@ -30,12 +30,12 @@ namespace NBKProject.Controllers
 
             //ZERO (0) page number means all Projects
             //1 means 1-10 , 2 means 20-30
-            WrapperMultiProject data = new Services.ProjectUDService().GetAllProjectList(PageNo);
+            WrapperMultiProject data = new Services.ProjectUDService().GetAllProjectList(EntriesFrom, EntriesTill);
             return Ok(data);
         }
 
         [HttpGet]
-        public IActionResult GetAllProjectListNotArchivedOrDeleted(int PageNo)
+        public IActionResult GetAllProjectListNotArchivedOrDeleted(int EntriesFrom, int EntriesTill)
         {
             #region Validate Token
             RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
@@ -45,12 +45,12 @@ namespace NBKProject.Controllers
 
             //ZERO (0) page number means all Projects
             //1 means 1-10 , 2 means 20-30
-            WrapperMultiProject data = new Services.ProjectUDService().GetAllProjectListNotArchivedOrDeleted(PageNo);
+            WrapperMultiProject data = new Services.ProjectUDService().GetAllProjectListNotArchivedOrDeleted(EntriesFrom, EntriesTill);
             return Ok(data);
         }
 
         [HttpGet]
-        public IActionResult GetAllArchivedProjectList(int PageNo)
+        public IActionResult GetAllArchivedProjectList(int EntriesFrom, int EntriesTill)
         {
             #region Validate Token
             RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
@@ -60,12 +60,12 @@ namespace NBKProject.Controllers
 
             //ZERO (0) page number means all Projects
             //1 means 1-10 , 2 means 20-30
-            WrapperMultiProject data = new Services.ProjectUDService().GetAllArchivedProjectList(PageNo);
+            WrapperMultiProject data = new Services.ProjectUDService().GetAllArchivedProjectList(EntriesFrom, EntriesTill);
             return Ok(data);
         }
 
         [HttpGet]
-        public IActionResult GetAllDeletedProjectList(int PageNo)
+        public IActionResult GetAllDeletedProjectList(int EntriesFrom, int EntriesTill)
         {
             #region Validate Token
             RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
@@ -75,7 +75,7 @@ namespace NBKProject.Controllers
 
             //ZERO (0) page number means all Projects
             //1 means 1-10 , 2 means 20-30
-            WrapperMultiProject data = new Services.ProjectUDService().GetAllDeletedProjectList(PageNo);
+            WrapperMultiProject data = new Services.ProjectUDService().GetAllDeletedProjectList(EntriesFrom, EntriesTill);
             return Ok(data);
         }
 

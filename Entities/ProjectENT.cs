@@ -18,6 +18,7 @@ namespace NBKProject.Entities
     public class WrapperProject
     {
         public ProjectENT Project { get; set; }
+        
     }
 
     public class WrapperMultiProject
@@ -96,11 +97,20 @@ namespace NBKProject.Entities
         public string Avvik { get; set; }
         public string AvvikSendtKommune { get; set; }
         public bool? SkipInspection { get; set; }
+        public List<ProjectServiceENT> ProjectService { get; set; }
 
+    }
+
+    public class ProjectServiceENT
+    {
+        public int Id { get; set; }
+        public int? ProjectId { get; set; }
+        public int? ServiceId { get; set; }
+        public int? Quantity { get; set; }
+        public string Price { get; set; }
+        public bool? IsNewAdded { get; set; }
     }
 
 
 
-
-    
 }

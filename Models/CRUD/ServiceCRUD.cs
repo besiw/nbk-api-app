@@ -212,6 +212,20 @@ namespace NBKProject.Models.CRUD
 
             Obj.Id = Data.Id;
 
+            //Adding service workflow
+            foreach (var item in Obj.ServiceWorkflowCategory)
+            {
+                dbcontext = new NbkDbEntities();
+                ServiceWorkflowCategory ServiceData = new ServiceWorkflowCategory()
+                {
+                    ServiceId = item.ServiceId,
+                    WorkflowCategoryId = item.WorkflowCategoryId
+                };
+                dbcontext.ServiceWorkflowCategory.Add(ServiceData);
+                dbcontext.SaveChanges();
+            }
+            
+
             return Obj;
         }
 

@@ -39,20 +39,39 @@ namespace NBKProject.Models.NbkEF
         public virtual DbSet<ProjectService> ProjectService { get; set; }
         public virtual DbSet<ProjectStatuses> ProjectStatuses { get; set; }
         public virtual DbSet<Service> Service { get; set; }
+        public virtual DbSet<ServiceCategory> ServiceCategory { get; set; }
         public virtual DbSet<ServicePerSlab> ServicePerSlab { get; set; }
         public virtual DbSet<ServiceType> ServiceType { get; set; }
+        public virtual DbSet<ServiceWorkflowCategory> ServiceWorkflowCategory { get; set; }
         public virtual DbSet<UserType> UserType { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<WorkflowCategory> WorkflowCategory { get; set; }
+        public virtual DbSet<WorkflowCategorySteps> WorkflowCategorySteps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
+                #region OLD
+                ////    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                ////    optionsBuilder.UseSqlServer("Data Source=(local);Database=nbk_Db;Persist Security Info=True;User ID=sa;Password=123;");
+
+                //////Test DB below Godaddy
+                ////    //optionsBuilder.UseSqlServer("Data Source=182.50.133.110;Database=nbk_Db1;Persist Security Info=True;User ID=nbkUser;Password=nbk@@007;");
+
+                ////    //For Azure Dev Op DEV DB
+                ////    //optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
+
+                #endregion
+                
                 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 //optionsBuilder.UseSqlServer("Data Source=(local);Database=nbk_Db;Persist Security Info=True;User ID=sa;Password=123;");
                 //Test DB below
-                //optionsBuilder.UseSqlServer("Data Source=182.50.133.110;Database=nbk_Db1;Persist Security Info=True;User ID=nbkUser;Password=nbk@@007;");
-                optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
+                // optionsBuilder.UseSqlServer("Data Source=182.50.133.110;Database=nbk_Db1;Persist Security Info=True;User ID=nbkUser;Password=nbk@@007;");
+                //azure db
+                //optionsBuilder.UseSqlServer("Data Source=nbk.database.windows.net,1433;Database=nbk_Db;Persist Security Info=True;User ID=admin@nbk@nbk;Password=so19#GreenVision;");
+                //amazon test db
+                optionsBuilder.UseSqlServer("Data Source=nbk-db1.c3e125qqptxq.eu-central-1.rds.amazonaws.com,1433;Database=nbk-Db1;Persist Security Info=True;User ID=nbkUser;Password=6DDipFLWBm;");
             }
         }
 
@@ -324,6 +343,8 @@ namespace NBKProject.Models.NbkEF
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Name).HasMaxLength(500);
+
+                entity.Property(e => e.WorkflowCategoryId).HasColumnName("WorkflowCategoryID");
             });
 
             modelBuilder.Entity<PostNum>(entity =>
@@ -628,6 +649,13 @@ namespace NBKProject.Models.NbkEF
                     .HasConstraintName("FK_Service_ServiceType");
             });
 
+            modelBuilder.Entity<ServiceCategory>(entity =>
+            {
+                entity.ToTable("ServiceCategory", "nbkUser");
+
+                entity.Property(e => e.Name).HasMaxLength(500);
+            });
+
             modelBuilder.Entity<ServicePerSlab>(entity =>
             {
                 entity.ToTable("ServicePerSlab", "nbkUser");
@@ -645,6 +673,15 @@ namespace NBKProject.Models.NbkEF
                 entity.ToTable("ServiceType", "nbkUser");
 
                 entity.Property(e => e.SortOrder).HasColumnName("sortOrder");
+            });
+
+            modelBuilder.Entity<ServiceWorkflowCategory>(entity =>
+            {
+                entity.ToTable("ServiceWorkflowCategory", "nbkUser");
+
+                entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+
+                entity.Property(e => e.WorkflowCategoryId).HasColumnName("WorkflowCategoryID");
             });
 
             modelBuilder.Entity<UserType>(entity =>
@@ -674,6 +711,10 @@ namespace NBKProject.Models.NbkEF
 
                 entity.Property(e => e.Picture).HasMaxLength(250);
 
+                entity.Property(e => e.TokenValidFrom).HasColumnType("datetime");
+
+                entity.Property(e => e.TokenValidTo).HasColumnType("datetime");
+
                 entity.Property(e => e.UserName).HasMaxLength(50);
 
                 entity.Property(e => e.UserTypeId).HasColumnName("UserTypeID");
@@ -682,6 +723,24 @@ namespace NBKProject.Models.NbkEF
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.UserTypeId)
                     .HasConstraintName("FK_User_UserType");
+            });
+
+            modelBuilder.Entity<WorkflowCategory>(entity =>
+            {
+                entity.ToTable("WorkflowCategory", "nbkUser");
+
+                entity.Property(e => e.Name).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<WorkflowCategorySteps>(entity =>
+            {
+                entity.ToTable("WorkflowCategorySteps", "nbkUser");
+
+                entity.Property(e => e.StepName)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.WorkflowCategoryId).HasColumnName("WorkflowCategoryID");
             });
         }
     }

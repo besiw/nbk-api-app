@@ -63,5 +63,12 @@ namespace NBKProject.Services
 
             return RequestResponse;
         }
+
+        public WrapperChecklistItemTemplate CreateSingleChecklistItemTempByChecklistTempId(ChecklistItemTemplateENT Obj)
+        {
+            WrapperChecklistItemTemplate data = new WrapperChecklistItemTemplate();
+            data.ChecklistItemTemplate = new ChecklistTemplateCRUD().CreateSingleChecklistItemTemp(Obj);
+            return data;
+        }
     }
 }

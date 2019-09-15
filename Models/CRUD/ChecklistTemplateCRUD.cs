@@ -196,15 +196,64 @@ namespace NBKProject.Models.CRUD
             NbkDbEntities dbcontext = new NbkDbEntities();
             ChecklistTemplate Data = new ChecklistTemplate()
             {
-                Title = Obj.Title                
+                Title = Obj.Title,
+                IsDefault = Obj.IsDefault                
             };
             dbcontext.ChecklistTemplate.Add(Data);
             dbcontext.SaveChanges();
             Obj.Id = Data.Id;
 
+
+            if(Convert.ToInt32(Obj.ServiceSelectedID) > 0)
+            {
+                dbcontext = new NbkDbEntities();
+                var ServiceDetail = dbcontext.Service.Where(x => x.Id == Obj.ServiceSelectedID).FirstOrDefault();
+                ServiceDetail.ChecklistTempId = Obj.Id;
+                dbcontext.SaveChanges();
+
+                dbcontext = new NbkDbEntities();
+                var PreviousService = dbcontext.Service.Where(x => x.ChecklistTempId == Obj.Id && x.Id != Obj.ServiceSelectedID).FirstOrDefault();
+                if (PreviousService != null)
+                {
+                    PreviousService.ChecklistTempId = null;
+                    dbcontext.SaveChanges();
+                }
+            }
+
+            if(Obj.ChecklistItemTemplateList.Count > 0)
+            {
+                foreach (var item in Obj.ChecklistItemTemplateList)
+                {
+                    dbcontext = new NbkDbEntities();
+                    ChecklistItemTemplate DataItems = new ChecklistItemTemplate()
+                    {
+                        Title = item.Title,
+                        ChecklistId = item.ChecklistId
+                    };
+                    dbcontext.ChecklistItemTemplate.Add(DataItems);
+                    dbcontext.SaveChanges();
+                    item.Id = DataItems.Id;
+                }                
+            }
+
             return Obj;
         }
 
+        public ChecklistItemTemplateENT CreateSingleChecklistItemTemp(ChecklistItemTemplateENT Obj)
+        {
+
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            ChecklistItemTemplate DataItems = new ChecklistItemTemplate()
+            {
+                Title = Obj.Title,
+                ChecklistId = Obj.ChecklistId
+            };
+            dbcontext.ChecklistItemTemplate.Add(DataItems);
+            dbcontext.SaveChanges();
+            Obj.Id = DataItems.Id;
+
+            return Obj;
+        }
         
     }
 }
