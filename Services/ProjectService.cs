@@ -65,15 +65,15 @@ namespace NBKProject.Services
             return data;
         }
 
-        public RequestResponse DeleteSingleProject(int id)
+        public RequestResponse DeleteSingleProject(int id, bool isDelete)
         {
             RequestResponse RequestResponse = new RequestResponse();
             try
             {
 
 
-                new ProjectCRUD().DeleteSingle(id);
-                RequestResponse.Message = "Record deleted";
+                new ProjectCRUD().DeleteSingle(id, isDelete);
+                RequestResponse.Message = "Project status updated";
                 RequestResponse.Success = true;
             }
             catch (Exception ex)
@@ -82,6 +82,15 @@ namespace NBKProject.Services
                 RequestResponse.Success = false;
             }
 
+            return RequestResponse;
+        }
+
+        public RequestResponse UpdateProjectArchiveStatus(int ProjectID, bool isArchive)
+        {
+            RequestResponse RequestResponse = new RequestResponse();
+            new ProjectCRUD().UpdateProjectArchiveStatus(ProjectID, isArchive);
+            RequestResponse.Message = "Project status updated";
+            RequestResponse.Success = true;
             return RequestResponse;
         }
     }

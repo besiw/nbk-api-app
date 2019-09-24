@@ -108,7 +108,7 @@ namespace NBKProject.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteProject(int ProjectID)
+        public IActionResult DeleteProject(int ProjectID, bool isDelete)
         {
             #region Validate Token
             RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
@@ -117,7 +117,7 @@ namespace NBKProject.Controllers
 
 
 
-            RequestResponse RequestResponse = new Services.ProjectUDService().DeleteSingleProject(ProjectID);
+            RequestResponse RequestResponse = new Services.ProjectUDService().DeleteSingleProject(ProjectID, isDelete);
             if (RequestResponse.Success == false) return BadRequest(RequestResponse);
 
             return Ok(RequestResponse);
@@ -139,6 +139,21 @@ namespace NBKProject.Controllers
             return Ok(data);
         }
 
-       
+
+        [HttpGet]
+        public IActionResult ArchiveProject(int ProjectID, bool isArchive)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+            RequestResponse RequestResponse = new Services.ProjectUDService().UpdateProjectArchiveStatus(ProjectID, isArchive);
+            if (RequestResponse.Success == false) return BadRequest(RequestResponse);
+
+            return Ok(RequestResponse);
+        }
+
     }
 }

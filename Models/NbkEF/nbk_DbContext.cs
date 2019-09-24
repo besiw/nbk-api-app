@@ -38,6 +38,7 @@ namespace NBKProject.Models.NbkEF
         public virtual DbSet<ProjectParty> ProjectParty { get; set; }
         public virtual DbSet<ProjectService> ProjectService { get; set; }
         public virtual DbSet<ProjectStatuses> ProjectStatuses { get; set; }
+        public virtual DbSet<ProjectWorkflowSteps> ProjectWorkflowSteps { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<ServiceCategory> ServiceCategory { get; set; }
         public virtual DbSet<ServicePerSlab> ServicePerSlab { get; set; }
@@ -596,6 +597,23 @@ namespace NBKProject.Models.NbkEF
                 entity.ToTable("ProjectStatuses", "nbkUser");
 
                 entity.Property(e => e.Status).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<ProjectWorkflowSteps>(entity =>
+            {
+                entity.ToTable("ProjectWorkflowSteps", "nbkUser");
+
+                entity.Property(e => e.InsertDate).HasColumnType("datetime");
+
+                entity.Property(e => e.IsTransfer).HasColumnName("isTransfer");
+
+                entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
+
+                entity.Property(e => e.TaskId).HasColumnName("TaskID");
+
+                entity.Property(e => e.WorkflowId).HasColumnName("WorkflowID");
+
+                entity.Property(e => e.WorkflowStepId).HasColumnName("WorkflowStepID");
             });
 
             modelBuilder.Entity<Service>(entity =>

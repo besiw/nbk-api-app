@@ -90,6 +90,8 @@ namespace NBKProject.Models.CRUD
             return Data;
         }
 
+        
+
         public List<ProjectENT> GetAllDeletedProjectList(int EntriesFrom, int EntriesTill)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
@@ -132,33 +134,135 @@ namespace NBKProject.Models.CRUD
         
 
 
-        public void DeleteSingle(int Id)
+        public void DeleteSingle(int ProjectID, bool isDelete)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
-            Project Obj = dbcontext.Project.Where(x => x.Id == Id).FirstOrDefault();
-            dbcontext.Project.Remove(Obj);
+            var Data = dbcontext.Project.Where(x => x.Id == ProjectID).FirstOrDefault();
+            Data.IsArchived = isDelete;
+            dbcontext.Project.Attach(Data);
+            var update = dbcontext.Entry(Data);
+            update.Property(x => x.IsDeleted).IsModified = true;
             dbcontext.SaveChanges();
+            //NbkDbEntities dbcontext = new NbkDbEntities();
+            //Project Obj = dbcontext.Project.Where(x => x.Id == Id).FirstOrDefault();
+            //dbcontext.Project.Remove(Obj);
+            //dbcontext.SaveChanges();
         }
 
         public ProjectENT UpdateSelectSingle(ProjectENT Obj)
         {
-
-
             NbkDbEntities dbcontext = new NbkDbEntities();
+
+                 
             Project Data = new Project()
             {
                 Id = Obj.Id,
-                Title = Obj.Title
+                Title = Obj.Id + " - " + Obj.Address + " - " + Obj.GardsNo + "/" + Obj.Bruksnmmer,
+                Address = Obj.Address,
+                CustomerId = Obj.CustomerId,
+                ContactPersonId = Obj.ContactPersonId,
+                BuildingSupplierId = Obj.BuildingSupplierId,
+                GardsNo = Obj.GardsNo,
+                Bruksnmmer = Obj.Bruksnmmer,
+                PostNo = Obj.PostNo,
+                Poststed = Obj.Poststed,
+                Kommune = Obj.Kommune,
+                Description = Obj.Description
             };
-
 
             dbcontext.Project.Attach(Data);
             var update = dbcontext.Entry(Data);
             update.Property(x => x.Title).IsModified = true;
+            update.Property(x => x.CustomerId).IsModified = true;
+            update.Property(x => x.ContactPersonId).IsModified = true;
+            update.Property(x => x.BuildingSupplierId).IsModified = true;
+            update.Property(x => x.GardsNo).IsModified = true;
+            update.Property(x => x.PostNo).IsModified = true;
+            update.Property(x => x.Poststed).IsModified = true;
+            update.Property(x => x.Kommune).IsModified = true;
+            update.Property(x => x.Bruksnmmer).IsModified = true;
+            update.Property(x => x.Description).IsModified = true;
+            update.Property(x => x.Address).IsModified = true;
             dbcontext.SaveChanges();
 
-           
+
+            //Services add
+            Obj.ProjectService = InsertProjectServicesList(Obj.ProjectService);
+
+            //Adding Default partytype into projectparty table
+            List<ServiceWorkflowCategory> DataServiceWorkflowCatagory = GetServiceWorkflowCategoryByServiceID(Obj.ProjectService);
+
+
+            List<PartyType> DefaultPartyTypes = DefaultPartyTypesList(DataServiceWorkflowCatagory);
+            ContactBook Dummy = GetDummyContact();
+            foreach (var item in DefaultPartyTypes)
+            {
+                AddProjectParty(Obj.Id, Dummy.Id, item.Id);
+            }
+
+            //Project checklist creation 
+            ProjectChecklistsOnUpdateCreate(Obj.Id, Obj.ProjectService);
+
             return Obj;
+        }
+
+        public void ProjectChecklistsOnUpdateCreate(int? ProjectId, List<ProjectServiceENT> ServicesList)
+        {
+            NbkDbEntities db = new NbkDbEntities();
+            List<int> ProjectServiceIDs = ServicesList.Select(X => X.Id).ToList();
+            //var list = (from r in db.ProjectChecklist where r.ProjectId == ProjectId select r).ToList();
+            if (ProjectId != null)
+            {
+                var listServices = ListOfProjectServicesForUpdate(Convert.ToInt32(ProjectId), ProjectServiceIDs);
+                foreach (var item in listServices)
+                {
+                    ChecklistTemplate ObjChecklistTemp = ChecklistTempByServiceID(item.ServiceId);
+                    Service ObjService = ServiceByServiceID(item.ServiceId);
+                    int totalServices = Convert.ToInt32(item.Quantity);
+                    //int a = i + 1;
+                    if (totalServices > 0)
+                    {
+                        for (int i = 0; i < totalServices; i++)
+                        {
+                            //Checklist for ServiceNameHere
+                            ProjectChecklist obj = new ProjectChecklist();
+
+                            obj.ProjectId = item.ProjectId;
+                            if (item.Service.ChecklistTempId != null)
+                            {
+
+                                obj.ChecklistName = ObjChecklistTemp.Title;
+                            }
+                            else
+                            {
+                                obj.ChecklistName = "Checklist for " + ObjService.Name;
+                            }
+                            db.ProjectChecklist.Add(obj);
+                            db.SaveChanges();
+                            if (ObjService.ChecklistTempId != null)
+                            {
+                                int ProjectChecklistID = obj.Id;
+                                int ChecklistTempId = Convert.ToInt32(ObjService.ChecklistTempId);
+                                SaveChecklistTemp(ChecklistTempId, ProjectChecklistID);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ProjectChecklist obj = new ProjectChecklist();
+                        obj.ProjectId = item.ProjectId;
+                        obj.SortOrder = item.Id;
+                        obj.ChecklistName = item.Service.Name + " Checklist";
+                        db.ProjectChecklist.Add(obj);
+                        db.SaveChanges();
+                    }
+                    //Service status change
+                    var ProService = db.ProjectService.Where(x => x.Id == item.Id).FirstOrDefault();
+                    ProService.IsNewAdded = false;
+                    db.SaveChanges();
+                }
+            }
+
         }
 
 
@@ -216,12 +320,12 @@ namespace NBKProject.Models.CRUD
              return Obj;
         }
 
-
+        
         public void ProjectChecklistsCreate(int? ProjectId)
         {
 
             NbkDbEntities db = new NbkDbEntities();
-            var list = (from r in db.ProjectChecklist where r.ProjectId == ProjectId select r).ToList();
+            //var list = (from r in db.ProjectChecklist where r.ProjectId == ProjectId select r).ToList();
 
             if (ProjectId != null)
             {
@@ -363,6 +467,12 @@ namespace NBKProject.Models.CRUD
             NbkDbEntities dbcontext = new NbkDbEntities();   
             return dbcontext.ProjectService.Where(x => x.ProjectId == proId).ToList();
         }
+
+        public List<ProjectService> ListOfProjectServicesForUpdate(int proId, List<int> ProjectServiceIDs)
+        {
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            return dbcontext.ProjectService.Where(x => x.ProjectId == proId && ProjectServiceIDs.Contains(x.Id)).ToList();
+        }
         public void AddProjectParty(int projId, int PartyId, int PartyTypeId)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
@@ -394,7 +504,7 @@ namespace NBKProject.Models.CRUD
             
             if (ServicesList.Count != 0)
             {
-                List<int> ServiceIDs = ServicesList.Select(x => x.Id).ToList();
+                List<int> ServiceIDs = ServicesList.Where(x=>x.IsNewAdded == true).Select(x => x.Id).ToList();
                 NbkDbEntities dbcontext = new NbkDbEntities();
                 Data = dbcontext.ServiceWorkflowCategory.Where(x => ServiceIDs.Contains(x.ServiceId)).ToList();
                 
@@ -416,25 +526,30 @@ namespace NBKProject.Models.CRUD
 
         }
 
-        public void InsertProjectServicesList(List<ProjectServiceENT> ServicesList)
+        public List<ProjectServiceENT> InsertProjectServicesList(List<ProjectServiceENT> ServicesList)
         {
             if (ServicesList.Count != 0)
             {
                 foreach (var item in ServicesList)
                 {
-                    NbkDbEntities dbcontext = new NbkDbEntities();
-                    ProjectService Data = new ProjectService()
+                    if (item.IsNewAdded == true)
                     {
-                        ProjectId = item.ProjectId,
-                        ServiceId = item.ServiceId,
-                        Quantity = item.Quantity,
-                        Price = item.Price,
-                        IsNewAdded = item.IsNewAdded
-                    };
-                    dbcontext.ProjectService.Add(Data);
-                    dbcontext.SaveChanges();
+                        NbkDbEntities dbcontext = new NbkDbEntities();
+                        ProjectService Data = new ProjectService()
+                        {
+                            ProjectId = item.ProjectId,
+                            ServiceId = item.ServiceId,
+                            Quantity = item.Quantity,
+                            Price = item.Price,
+                            IsNewAdded = false
+                        };
+                        dbcontext.ProjectService.Add(Data);
+                        dbcontext.SaveChanges();
+                        item.Id = Data.Id;
+                    }
                 }
-            }           
+            }
+            return ServicesList;
         }
 
         public void UpdateProjectTitle(Project Obj)
@@ -445,5 +560,18 @@ namespace NBKProject.Models.CRUD
             update.Property(x => x.Title).IsModified = true;
             dbcontext.SaveChanges();
         }
+
+        public void UpdateProjectArchiveStatus(int ProjectID, bool isArchive)
+        {
+
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            var Data = dbcontext.Project.Where(x => x.Id == ProjectID).FirstOrDefault();
+            Data.IsArchived = isArchive;
+            dbcontext.Project.Attach(Data);
+            var update = dbcontext.Entry(Data);
+            update.Property(x => x.IsArchived).IsModified = true;
+            dbcontext.SaveChanges();
+        }
+           
     }
 }
