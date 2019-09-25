@@ -125,7 +125,18 @@ namespace NBKProject.Models.CRUD
             ProjectENT Data = new ProjectENT()
             {
                 Id = Obj.Id,
-                Title = Obj.Title
+                Title = Obj.Title,
+                Address = Obj.Address,
+                Dated = Obj.Dated,
+                CustomerId = Obj.CustomerId,
+                ContactPersonId = Obj.ContactPersonId,
+                BuildingSupplierId = Obj.BuildingSupplierId,
+                GardsNo = Obj.GardsNo,
+                Bruksnmmer = Obj.Bruksnmmer,
+                PostNo = Obj.PostNo,
+                Poststed = Obj.Poststed,
+                Kommune = Obj.Kommune,
+                Description = Obj.Description,
             };
             return Data;
 
@@ -293,7 +304,7 @@ namespace NBKProject.Models.CRUD
                 PostNo= Obj.PostNo,
                 Poststed= Obj.Poststed,
                 Kommune= Obj.Kommune,
-                Description= Obj.Description,
+                Description= Obj.Description
                 //CreateChecklistCdate= Obj.CreateChecklistCdate,
                 //AddPartiesCdate= Obj.AddPartiesCdate
             };

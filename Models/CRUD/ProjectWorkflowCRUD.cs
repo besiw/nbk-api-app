@@ -17,5 +17,120 @@ namespace NBKProject.Models.CRUD
     public class ProjectWorkflowCRUD
     {
 
+        #region Workflow # 1
+
+        public WrapperProjectWorkflow GetProjectWFOneEmailFormated(ProjectWorkflowENT Param)
+        {
+            WrapperProjectWorkflow WrapperProjectWorkflow = new WrapperProjectWorkflow();
+            EmailWorkflow Content = new ProjectWorkflowCRUD().EmailContent(Param.WorkflowId, Param.ProjectId, Convert.ToInt32(Param.InsertedBy));
+            Param.EmailContent = Content.Content;
+            Param.EmailSubject = Content.Title;
+            WrapperProjectWorkflow.ProjectWorkflow = Param;
+            return WrapperProjectWorkflow;
+        }
+        public EmailWorkflow EmailContent(int emailId, int proId, int UserID)
+        {
+            
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            Users user = dbcontext.Users.Where(x => x.Id == UserID).FirstOrDefault();
+
+            dbcontext = new NbkDbEntities();
+            var emailContent = new EmailWorkflow();
+            EmailTemplateENT template = new EmailTemplateCRUD().SelectSingle(emailId);
+            ProjectENT projectDetail = new ProjectCRUD().SelectSingle(proId);
+            ContactENT customer = new ContactCRUD().SelectSingle(Convert.ToInt32(projectDetail.CustomerId));
+            ContactENT contactPerson = new ContactCRUD().SelectSingle(Convert.ToInt32(projectDetail.ContactPersonId));
+            BuildingSupplierENT buildingSupplier = new BuildingSupplierCRUD().SelectSingle(Convert.ToInt32(projectDetail.BuildingSupplierId));
+            if (emailId == 1)
+            {
+                int price = 0;
+                float priceWithGst = 0f;
+                var ProjectServices = new ProjectCRUD().ListOfProjectServices(proId);
+                if (ProjectServices != null)
+                {
+                    foreach (var item in ProjectServices)
+                    {
+                        price = price + Convert.ToInt32(item.Price);
+                    }
+                }
+
+                //template.Template = template.Template.Replace("#ansvarlig#", projectDetail.Contact.Name);
+                template.Template = template.Template.Replace("#priceWithoutGst#", price.ToString());
+                if (price != 0)
+                {
+                    float remainder = price * 0.25f;
+                    priceWithGst = price + remainder;
+                }
+                template.Template = template.Template.Replace("#priceWithGst#", priceWithGst.ToString());
+            }
+            dbcontext = new NbkDbEntities();
+            string InspectorName = "";
+            if (emailId == 7 || emailId == 8)
+            {
+                if (projectDetail.InspectorId != null)
+                {
+                    InspectorName = dbcontext.Users.Where(x => x.Id == projectDetail.InspectorId).Select(x => x.FullName).FirstOrDefault();
+                }
+                template.Template = template.Template.Replace("#InspectorName#", InspectorName);
+            }
+            if (projectDetail.CustomerId != null)
+            {
+                
+                template.Template = template.Template.Replace("#anvarligSokerCompany#", contactPerson.CompanyName);
+                template.Template = template.Template.Replace("#ansvarlig#", contactPerson.Name);
+            }
+            else
+            {
+                template.Template = template.Template.Replace("#anvarligSokerCompany#", "");
+                template.Template = template.Template.Replace("#ansvarlig#", "");
+            }
+            template.Template = template.Template.Replace("#PhoneNumber#", user.ContactNo);
+            template.Template = template.Template.Replace("#Email#", user.Email);
+            template.Template = template.Template.Replace("#Name#", user.FullName);
+            template.Template = template.Template.Replace("#Designation#", user.Designation);
+            template.Template = template.Template.Replace("#Address#", projectDetail.Address);
+            template.Template = template.Template.Replace("#Description#", projectDetail.Description);
+            template.Template = template.Template.Replace("#ProjectTitle#", projectDetail.Title);
+            template.Template = template.Template.Replace("#CustomerName#", customer.Name);
+            template.Template = template.Template.Replace("#CustomerPhone#", customer.ContactNo);
+            template.Template = template.Template.Replace("#BuildingSupplier#", buildingSupplier.Title);
+
+            emailContent.Content = template.Template;
+            emailContent.Title = EmailSubjectReplacements(template, projectDetail, customer, contactPerson, buildingSupplier,user);
+            return emailContent;
+
+           
+
+        }
+
+
+        public string EmailSubjectReplacements(EmailTemplateENT template, ProjectENT projectDetail, ContactENT customer, ContactENT contactPerson, BuildingSupplierENT buildingSupplier, Users user)
+        {
+            string content = "";
+            
+            template.Title = template.Title.Replace("#CustomerName#", customer.Name);
+            template.Title = template.Title.Replace("#Description#", projectDetail.Description);
+            template.Title = template.Title.Replace("#Name#", user.FullName);
+            template.Title = template.Title.Replace("#PhoneNumber#", user.ContactNo);
+            template.Title = template.Title.Replace("#Email#", user.Email);
+            template.Title = template.Title.Replace("#Designation#", user.Designation);
+            if (contactPerson != null)
+            {
+                template.Title = template.Title.Replace("#ansvarlig#", contactPerson.Name);
+            }
+            else
+            {
+                template.Title = template.Title.Replace("#ansvarlig#", "");
+            }
+            template.Title = template.Title.Replace("#Address#", projectDetail.Address);
+            template.Title = template.Title.Replace("#ProjectTitle#", projectDetail.Title);
+            template.Title = template.Title.Replace("#CustomerPhone#", customer.ContactNo);
+            template.Title = template.Title.Replace("#BuildingSupplier#", buildingSupplier.Title);
+            content = template.Title;
+            
+            return content;
+        }
+
+        #endregion
     }
 }

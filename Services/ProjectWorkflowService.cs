@@ -19,10 +19,9 @@ namespace NBKProject.Services
     {
         public WrapperProjectWorkflow GetProjectWFOneEmailFormated(ProjectWorkflowENT Param)
         {
-            WrapperProjectWorkflow WrapperProjectWorkflow = new WrapperProjectWorkflow();
-            
-          //new ProjectWorkflowCRUD().GetProjectWFOneEmailFormated(Param);
-                 
+            WrapperProjectWorkflow WrapperProjectWorkflow = new WrapperProjectWorkflow();            
+            WrapperProjectWorkflow = new ProjectWorkflowCRUD().GetProjectWFOneEmailFormated(Param);
+
             return WrapperProjectWorkflow;
         }
         

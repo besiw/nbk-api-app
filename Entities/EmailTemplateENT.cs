@@ -50,5 +50,12 @@ namespace NBKProject.Entities
             "#InspectorName#"
         };
     }
-    
+
+    public class EmailWorkflow
+    {
+        public string Title { get; set; }
+
+        public string Content { get; set; }
+    }
+
 }
