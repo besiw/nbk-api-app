@@ -198,7 +198,7 @@ namespace NBKProject.Models.CRUD
 
 
             //Services add
-            Obj.ProjectService = InsertProjectServicesList(Obj.ProjectService);
+            Obj.ProjectService = InsertProjectServicesList(Obj.ProjectService, Obj.Id);
 
             //Adding Default partytype into projectparty table
             List<ServiceWorkflowCategory> DataServiceWorkflowCatagory = GetServiceWorkflowCategoryByServiceID(Obj.ProjectService);
@@ -312,7 +312,7 @@ namespace NBKProject.Models.CRUD
             dbcontext.SaveChanges();
 
             //Services add
-            InsertProjectServicesList(Obj.ProjectService);
+            InsertProjectServicesList(Obj.ProjectService, Obj.Id);
 
             //Adding Default partytype into projectparty table
             List<ServiceWorkflowCategory> DataServiceWorkflowCatagory = GetServiceWorkflowCategoryByServiceID(Obj.ProjectService);
@@ -328,6 +328,8 @@ namespace NBKProject.Models.CRUD
             //Project checklist creation 
             ProjectChecklistsCreate(Obj.Id);
 
+            
+            Obj.Title = Obj.Id + " - " + Obj.Address + " - " + Obj.GardsNo + "/" + Obj.Bruksnmmer;
              return Obj;
         }
 
@@ -355,7 +357,7 @@ namespace NBKProject.Models.CRUD
                             ProjectChecklist obj = new ProjectChecklist();
                             
                             obj.ProjectId = item.ProjectId;                            
-                            if (item.Service.ChecklistTempId != null)
+                            if (ObjChecklistTemp != null && !string.IsNullOrEmpty(ObjChecklistTemp.Title))
                             {
                                 
                                 obj.ChecklistName = ObjChecklistTemp.Title;
@@ -368,9 +370,15 @@ namespace NBKProject.Models.CRUD
                             db.SaveChanges();
                             if (ObjService.ChecklistTempId != null)
                             {
-                                int ProjectChecklistID = obj.Id;
-                                int ChecklistTempId = Convert.ToInt32(ObjService.ChecklistTempId);
-                                SaveChecklistTemp(ChecklistTempId, ProjectChecklistID);
+                                if (ObjService.ChecklistTempId > 0)
+                                {
+                                    int ProjectChecklistID = obj.Id;
+                                    if (ObjChecklistTemp != null)
+                                    {
+                                        int ChecklistTempId = Convert.ToInt32(ObjService.ChecklistTempId);
+                                        SaveChecklistTemp(ChecklistTempId, ProjectChecklistID);
+                                    }
+                                }
                             }
                         }
                     }
@@ -463,8 +471,14 @@ namespace NBKProject.Models.CRUD
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
             Service ObjService = dbcontext.Service.Where(x => x.Id == serviceID).FirstOrDefault();
-
-            return dbcontext.ChecklistTemplate.Where(x=>x.Id == ObjService.ChecklistTempId).FirstOrDefault();
+            if (ObjService.ChecklistTempId != null)
+            {
+                return dbcontext.ChecklistTemplate.Where(x => x.Id == ObjService.ChecklistTempId).FirstOrDefault();
+            }
+            else {
+                ChecklistTemplate obj = new ChecklistTemplate();
+                return obj;
+            }
         }
 
         public Service ServiceByServiceID(int? serviceID)
@@ -515,10 +529,12 @@ namespace NBKProject.Models.CRUD
             
             if (ServicesList.Count != 0)
             {
-                List<int> ServiceIDs = ServicesList.Where(x=>x.IsNewAdded == true).Select(x => x.Id).ToList();
+                List<int?> ServiceIDs = ServicesList.Where(x=>x.IsNewAdded == true).Select(x => x.ServiceId).ToList();
                 NbkDbEntities dbcontext = new NbkDbEntities();
-                Data = dbcontext.ServiceWorkflowCategory.Where(x => ServiceIDs.Contains(x.ServiceId)).ToList();
-                
+                if (ServiceIDs != null)
+                {
+                    Data = dbcontext.ServiceWorkflowCategory.Where(x => ServiceIDs.Contains(x.ServiceId)).ToList();
+                }
             }
             return Data;
         }
@@ -537,7 +553,7 @@ namespace NBKProject.Models.CRUD
 
         }
 
-        public List<ProjectServiceENT> InsertProjectServicesList(List<ProjectServiceENT> ServicesList)
+        public List<ProjectServiceENT> InsertProjectServicesList(List<ProjectServiceENT> ServicesList, int projectID)
         {
             if (ServicesList.Count != 0)
             {
@@ -548,7 +564,7 @@ namespace NBKProject.Models.CRUD
                         NbkDbEntities dbcontext = new NbkDbEntities();
                         ProjectService Data = new ProjectService()
                         {
-                            ProjectId = item.ProjectId,
+                            ProjectId = projectID,
                             ServiceId = item.ServiceId,
                             Quantity = item.Quantity,
                             Price = item.Price,
