@@ -42,7 +42,7 @@ namespace NBKProject.Helpers
             CompanyProfileENT setings = new CompanyCRUD().SelectAll();
             
             string webRootPath = _hostingEnvironment.WebRootPath;
-            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            string contentRootPath = _hostingEnvironment.WebRootPath;
             Param.AttachmentURL = webRootPath + "\\Resources\\Files\\" + fileName;
             HTMLToPdf(contentRootPath + "\\Resources\\Files\\Sample.pdf", contentRootPath + "\\Resources\\Files\\Docs\\" + fileName, model, setings, contentRootPath, Param);
             return Param;
