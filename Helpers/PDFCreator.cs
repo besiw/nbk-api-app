@@ -41,9 +41,9 @@ namespace NBKProject.Helpers
             
             CompanyProfileENT setings = new CompanyCRUD().SelectAll();
             
-            string webRootPath = _hostingEnvironment.WebRootPath;
-            string contentRootPath = _hostingEnvironment.WebRootPath;
-            Param.AttachmentURL = webRootPath + "\\Resources\\Files\\" + fileName;
+            //string webRootPath = _hostingEnvironment.WebRootPath;
+            string contentRootPath =  "https://nbk-api-dev.azurewebsites.net";//_hostingEnvironment.ContentRootPath;
+            Param.AttachmentURL = "https://nbk-api-dev.azurewebsites.net" + "\\Resources\\Files\\" + fileName;
             HTMLToPdf(contentRootPath + "\\Resources\\Files\\Sample.pdf", contentRootPath + "\\Resources\\Files\\Docs\\" + fileName, model, setings, contentRootPath, Param);
             return Param;
         }
