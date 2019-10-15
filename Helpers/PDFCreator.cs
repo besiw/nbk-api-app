@@ -274,8 +274,8 @@ namespace NBKProject.Helpers
             //var url = @"http://nbk.d.com.pk/Resources/global/images/RuneSignature.jpg";
             var url = contentRootPath+"\\Resources\\Images\\RuneSignature.jpg";
 
-            var uri = new Uri(url);
-            var path = Path.GetFileName(uri.AbsolutePath);
+            //var uri = new Uri(url);
+            //var path = Path.GetFileName(uri.AbsolutePath);
 
 
             //HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create(url);
