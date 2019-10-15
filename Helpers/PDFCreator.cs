@@ -43,8 +43,10 @@ namespace NBKProject.Helpers
             
             //string webRootPath = _hostingEnvironment.WebRootPath;
             string contentRootPath =  "https:\\nbk-api-dev.azurewebsites.net";//_hostingEnvironment.ContentRootPath;
-            Param.AttachmentURL = "https:\\nbk-api-dev.azurewebsites.net" + "\\Resources\\Files\\" + fileName;
-            HTMLToPdf(contentRootPath + "\\Resources\\Files\\Sample.pdf", contentRootPath + "\\Resources\\Files\\Docs\\" + fileName, model, setings, contentRootPath, Param);
+            Uri baseUri = new Uri("http://nbk-api-dev.azurewebsites.net");
+            Uri myUri = new Uri(baseUri, "Resources/Files/");
+            Param.AttachmentURL = myUri + fileName;
+            HTMLToPdf(myUri+"Sample.pdf", myUri+"Docs/" + fileName, model, setings, contentRootPath, Param);
             return Param;
         }
 
