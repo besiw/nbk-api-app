@@ -41,6 +41,8 @@ namespace NBKProject.Models.CRUD
 
 
         }
+
+
         public List<ServiceENT> GetAll(int PageNo, string SearchByName, string SearchByDescription)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
@@ -101,6 +103,24 @@ namespace NBKProject.Models.CRUD
                     
                 }
             }
+            List<ServiceENT> Data = new List<ServiceENT>();
+            Data.AddRange(Obj.Select(i => new ServiceENT
+            {
+                Id = i.Id,
+                Name = i.Name,
+                Description = i.Description,
+                ServiceTypeId = i.ServiceTypeId,
+                ServiceChargedAs = i.ServiceChargedAs,
+                Rate = i.Rate
+            }));
+
+            return Data;
+        }
+        public List<ServiceENT> GetMultipleServiceByMultiServiceIDs(List<int?> ServiceIDs)
+        {
+                        
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            List<Service> Obj = dbcontext.Service.Where(x => ServiceIDs.Contains(x.Id)).ToList();
             List<ServiceENT> Data = new List<ServiceENT>();
             Data.AddRange(Obj.Select(i => new ServiceENT
             {

@@ -89,9 +89,7 @@ namespace NBKProject.Models.CRUD
             }));
             return Data;
         }
-
         
-
         public List<ProjectENT> GetAllDeletedProjectList(int EntriesFrom, int EntriesTill)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();
@@ -493,6 +491,14 @@ namespace NBKProject.Models.CRUD
             return dbcontext.ProjectService.Where(x => x.ProjectId == proId).ToList();
         }
 
+        public List<ProjectService> ListOfProjectServicesByWorkflowID(int WorkflowID, int ProjectID)
+        {
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            List<int> ServiceIDListAssociatedWithWorkflow = dbcontext.ServiceWorkflowCategory.Where(x => x.WorkflowCategoryId == WorkflowID).Select(x=>x.ServiceId).ToList();
+            dbcontext = new NbkDbEntities();
+            List<ProjectService> Data = dbcontext.ProjectService.Where(x =>x.ProjectId == ProjectID && ServiceIDListAssociatedWithWorkflow.Contains(Convert.ToInt32(x.ServiceId))).ToList();
+            return Data;
+        }
         public List<ProjectService> ListOfProjectServicesForUpdate(int proId, List<int> ProjectServiceIDs)
         {
             NbkDbEntities dbcontext = new NbkDbEntities();

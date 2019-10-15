@@ -11,7 +11,7 @@ using NBKProject.Models.NbkEF;
 using NBKProject.Models.CRUD;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-
+using Microsoft.AspNetCore.Hosting;
 
 namespace NBKProject.Controllers
 {
@@ -20,9 +20,19 @@ namespace NBKProject.Controllers
     [ApiController]
     public class ProjectWorkflowController : ControllerBase
     {
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public ProjectWorkflowController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+        
+
         #region Workflow # 1
 
-        [HttpGet]
+        #region Step # 1
+        [HttpPost]
         public IActionResult GetProjectWFOneEmailFormated([FromBody]WrapperProjectWorkflow Param)
         {
             #region Validate Token
@@ -46,11 +56,49 @@ namespace NBKProject.Controllers
             #endregion
 
 
-
+            Param.ProjectWorkflow.InsertedBy = isAuthorized.UserProfileID;
             RequestResponse data = new Services.ProjectWorkflowService().ProjectWFOne(Param.ProjectWorkflow);
 
             return Ok(data);
         }
+        #endregion
+
+        #region Step # 2
+        [HttpPost]
+        public IActionResult GetProjectWFTwoEmailFormated([FromBody]WrapperProjectWorkflow Param)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+            
+            Param.ProjectWorkflow.InsertedBy = isAuthorized.UserProfileID;
+            WrapperProjectWorkflow data = new Services.ProjectWorkflowService().GetProjectWFTwoEmailFormatedWithPDF(Param.ProjectWorkflow, _hostingEnvironment);
+
+            return Ok(data);
+        }
+
+        
+        [HttpPost]
+        public IActionResult ProjectWFTwo([FromForm]string request)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+            
+            WrapperProjectWorkflow Param = JsonConvert.DeserializeObject<WrapperProjectWorkflow>(request);
+             
+            IFormFile FileInRequest = Request.Form.Files[0];  
+            Param.ProjectWorkflow.InsertedBy = isAuthorized.UserProfileID;
+            RequestResponse data = new Services.ProjectWorkflowService().ProjectWFTwo(Param.ProjectWorkflow, FileInRequest, _hostingEnvironment);
+
+            return Ok(data);
+        }
+        #endregion
+
+
 
         #endregion
     }

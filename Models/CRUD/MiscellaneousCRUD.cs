@@ -36,5 +36,22 @@ namespace NBKProject.Models.CRUD
 
 
         }
+
+        public PostCodeENT GetSinglePostCodeByPostNumber(string PostNumber)
+        {
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            PostNum Obj = dbcontext.PostNum.Where(x=>x.Postnummer == PostNumber).FirstOrDefault();
+            PostCodeENT Data = new PostCodeENT()
+            {
+                Id = Obj.Id,
+                Kategori = Obj.Kategori,
+                Poststed = Obj.Poststed,
+                Postnummer = Obj.Postnummer,
+                Kommunenavn = Obj.Kommunenavn,
+                Kommunenummer = Obj.Kommunenummer
+            };
+
+            return Data;
+        }
     }
 }

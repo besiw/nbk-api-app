@@ -18,6 +18,8 @@ namespace NBKProject.Models.NbkEF
         public DateTime? Date { get; set; }
         public int? PartyTypeId { get; set; }
         public bool? IsEmail { get; set; }
+        public int? WorkflowId { get; set; }
+        public int? WorkflowStepId { get; set; }
 
         public virtual ContactBook Party { get; set; }
         public virtual PartyType PartyType { get; set; }

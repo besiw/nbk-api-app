@@ -41,6 +41,11 @@ namespace NBKProject.Entities
         public int? InsertedBy { get; set; }
         public string EmailContent { get; set; }
         public string EmailSubject { get; set; }
+        public string EmailTo { get; set; }
+        public string EmailFrom { get; set; }
+        public string AttachmentURL { get; set; }
+        public string FileName { get; set; }
+        public string RootURL { get; set; }
     }
 
     

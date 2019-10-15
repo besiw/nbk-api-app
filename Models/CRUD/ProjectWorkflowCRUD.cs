@@ -19,33 +19,40 @@ namespace NBKProject.Models.CRUD
 
         #region Workflow # 1
 
-        public WrapperProjectWorkflow GetProjectWFOneEmailFormated(ProjectWorkflowENT Param)
+        public WrapperProjectWorkflow GetProjectWFEmailFormated(ProjectWorkflowENT Param)
         {
             WrapperProjectWorkflow WrapperProjectWorkflow = new WrapperProjectWorkflow();
-            EmailWorkflow Content = new ProjectWorkflowCRUD().EmailContent(Param.WorkflowId, Param.ProjectId, Convert.ToInt32(Param.InsertedBy));
+            EmailWorkflow Content = new ProjectWorkflowCRUD().EmailContent(Param);
             Param.EmailContent = Content.Content;
             Param.EmailSubject = Content.Title;
+            Param.EmailTo = Content.EmailTo;
+            Param.EmailFrom = Content.EmailFrom;
             WrapperProjectWorkflow.ProjectWorkflow = Param;
             return WrapperProjectWorkflow;
         }
-        public EmailWorkflow EmailContent(int emailId, int proId, int UserID)
+        public EmailWorkflow EmailContent(ProjectWorkflowENT Param)
         {
             
             NbkDbEntities dbcontext = new NbkDbEntities();
-            Users user = dbcontext.Users.Where(x => x.Id == UserID).FirstOrDefault();
+            Users user = dbcontext.Users.Where(x => x.Id == Param.InsertedBy).FirstOrDefault();
 
             dbcontext = new NbkDbEntities();
-            var emailContent = new EmailWorkflow();
-            EmailTemplateENT template = new EmailTemplateCRUD().SelectSingle(emailId);
-            ProjectENT projectDetail = new ProjectCRUD().SelectSingle(proId);
+            var emailDetails = new EmailWorkflow();
+            EmailTemplateENT template = new EmailTemplateCRUD().SelectSingle(Param.WorkflowStepId);
+            ProjectENT projectDetail = new ProjectCRUD().SelectSingle(Param.ProjectId);
             ContactENT customer = new ContactCRUD().SelectSingle(Convert.ToInt32(projectDetail.CustomerId));
             ContactENT contactPerson = new ContactCRUD().SelectSingle(Convert.ToInt32(projectDetail.ContactPersonId));
             BuildingSupplierENT buildingSupplier = new BuildingSupplierCRUD().SelectSingle(Convert.ToInt32(projectDetail.BuildingSupplierId));
-            if (emailId == 1)
+            CompanyProfileENT companyProfile = new CompanyCRUD().SelectAll();
+
+            emailDetails.EmailFrom = companyProfile.senderEmailAddress;
+            emailDetails.EmailTo = customer.Email;
+            if (Param.WorkflowStepId == 1)
             {
+                
                 int price = 0;
                 float priceWithGst = 0f;
-                var ProjectServices = new ProjectCRUD().ListOfProjectServices(proId);
+                var ProjectServices = new ProjectCRUD().ListOfProjectServices(Param.ProjectId);
                 if (ProjectServices != null)
                 {
                     foreach (var item in ProjectServices)
@@ -65,7 +72,7 @@ namespace NBKProject.Models.CRUD
             }
             dbcontext = new NbkDbEntities();
             string InspectorName = "";
-            if (emailId == 7 || emailId == 8)
+            if (Param.WorkflowStepId == 7 || Param.WorkflowStepId == 8)
             {
                 if (projectDetail.InspectorId != null)
                 {
@@ -95,15 +102,13 @@ namespace NBKProject.Models.CRUD
             template.Template = template.Template.Replace("#CustomerPhone#", customer.ContactNo);
             template.Template = template.Template.Replace("#BuildingSupplier#", buildingSupplier.Title);
 
-            emailContent.Content = template.Template;
-            emailContent.Title = EmailSubjectReplacements(template, projectDetail, customer, contactPerson, buildingSupplier,user);
-            return emailContent;
+            emailDetails.Content = template.Template;
+            emailDetails.Title = EmailSubjectReplacements(template, projectDetail, customer, contactPerson, buildingSupplier,user);
+            return emailDetails;
 
            
 
-        }
-
-
+        }        
         public string EmailSubjectReplacements(EmailTemplateENT template, ProjectENT projectDetail, ContactENT customer, ContactENT contactPerson, BuildingSupplierENT buildingSupplier, Users user)
         {
             string content = "";
@@ -130,7 +135,81 @@ namespace NBKProject.Models.CRUD
             
             return content;
         }
+        public ProjectWorkflowENT ProjectWFOneDone(ProjectWorkflowENT Param)
+        {
 
+            string emailsend = new Helpers.Emailing().EmailHostDetail(Param.EmailTo, Param.EmailFrom, Param.EmailSubject, Param.EmailContent, Param.FileName, Param.RootURL);
+            Param.InsertDate = DateTime.Now;
+            Param =  InsertRecordInEmailHistory(Param);
+            return Param;
+        }
+        public ProjectWorkflowENT InsertRecordInEmailHistory(ProjectWorkflowENT Param)
+        {
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            EmailHistory Data = new EmailHistory
+            {
+                ProjectId = Param.ProjectId,
+                WorkflowId = Param.WorkflowId,
+                WorkflowStepId = Param.WorkflowStepId,
+                //PartyId = 
+                Subject = Param.EmailSubject,
+                ToEmail = Param.EmailTo,
+                FromEmail = Param.EmailFrom,
+                Message = Param.EmailContent,
+                FileName = Param.FileName.ToString(),
+                Date = DateTime.Now
+                //PartyTypeId =
+                //IsEmail =
+
+            };
+
+            dbcontext.EmailHistory.Add(Data);
+            dbcontext.SaveChanges();
+            Param.TaskId = Data.Id;
+            return Param;
+        }
+        public ProjectWorkflowENT WorkflowProjectStepStatusAdd(ProjectWorkflowENT Param)
+        {
+
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            
+            ProjectWorkflowSteps Data = new ProjectWorkflowSteps()
+            {
+                ProjectId = Param.ProjectId,
+                WorkflowId = Param.WorkflowId,
+                WorkflowStepId = Param.WorkflowStepId,
+                IsTransfer = Param.IsTransfer,
+                TaskId = Param.TaskId,
+                InsertDate = Param.InsertDate,
+                InsertedBy = Param.InsertedBy
+            };
+
+
+            //dbcontext.ProjectWorkflowSteps.Attach(Data);
+            //var update = dbcontext.Entry(Data);
+            //update.Property(x => x.ProjectId).IsModified = true;
+            //update.Property(x => x.WorkflowId).IsModified = true;
+            //update.Property(x => x.WorkflowStepId).IsModified = true;
+            //update.Property(x => x.IsTransfer).IsModified = true;
+            //update.Property(x => x.TaskId).IsModified = true;
+            //update.Property(x => x.InsertDate).IsModified = true;
+            //update.Property(x => x.InsertedBy).IsModified = true;
+            dbcontext.ProjectWorkflowSteps.Add(Data);
+            dbcontext.SaveChanges();
+            Param.Id = Data.Id;
+
+            return Param;
+        }
+
+
+        public ProjectWorkflowENT ProjectWFTwoDone(ProjectWorkflowENT Param)
+        {
+
+            string emailsend = new Helpers.Emailing().EmailHostDetail(Param.EmailTo, Param.EmailFrom, Param.EmailSubject, Param.EmailContent, Param.FileName, Param.RootURL);
+            Param.InsertDate = DateTime.Now;
+            Param = InsertRecordInEmailHistory(Param);
+            return Param;
+        }
         #endregion
     }
 }
