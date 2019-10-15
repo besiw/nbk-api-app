@@ -145,6 +145,10 @@ namespace NBKProject.Models.CRUD
         }
         public ProjectWorkflowENT InsertRecordInEmailHistory(ProjectWorkflowENT Param)
         {
+            if(Param.FileName == null)
+            {
+                Param.FileName = "";
+            }
             NbkDbEntities dbcontext = new NbkDbEntities();
             EmailHistory Data = new EmailHistory
             {
