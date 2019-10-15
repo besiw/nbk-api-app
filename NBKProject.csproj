@@ -25,16 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bin\Debug\netcoreapp2.2\NBKProject.deps.json" />
-    <Content Include="bin\Debug\netcoreapp2.2\NBKProject.runtimeconfig.dev.json" />
-    <Content Include="bin\Debug\netcoreapp2.2\NBKProject.runtimeconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="bin\Debug\netcoreapp2.2\htmltopdfConvert.dll" />
     <None Include="bin\Debug\netcoreapp2.2\itextsharp.dll" />
     <None Include="bin\Debug\netcoreapp2.2\NBKProject.dll" />
-    <None Include="bin\Debug\netcoreapp2.2\NBKProject.pdb" />
   </ItemGroup>
 
   <ItemGroup>
