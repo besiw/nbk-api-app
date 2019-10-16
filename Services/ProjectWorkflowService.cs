@@ -65,7 +65,8 @@ namespace NBKProject.Services
         {
             WrapperProjectWorkflow WrapperProjectWorkflow = new WrapperProjectWorkflow();
             WrapperProjectWorkflow = new ProjectWorkflowCRUD().GetProjectWFEmailFormated(Param);
-            Param = new Helpers.PDFCreator().PdfGenerate(Param, _hostingEnvironment);
+            //Param = new Helpers.PDFCreator().PdfGenerate(Param, _hostingEnvironment);
+            Param.AttachmentURL = "https:\\nbk-api-dev.azurewebsites.net";
             return WrapperProjectWorkflow;
         }
 
@@ -77,7 +78,11 @@ namespace NBKProject.Services
             {
                 if (Param.IsTransfer == false)
                 {
-                    Param = new Helpers.PDFCreator().PdfSave(Param, _hostingEnvironment, FileInRequest); 
+                    //Param = new Helpers.PDFCreator().PdfSave(Param, _hostingEnvironment, FileInRequest);
+                    //temporary code
+                    Param.FileName = "";
+                    Param.RootURL = "test";
+                    //ends
                     Param = new ProjectWorkflowCRUD().ProjectWFTwoDone(Param);
                     Param = new ProjectWorkflowCRUD().WorkflowProjectStepStatusAdd(Param);
                     RequestResponse.Message = "Project status updated, email Sent successfully!";

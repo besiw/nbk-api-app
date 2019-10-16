@@ -49,6 +49,7 @@ namespace NBKProject.Helpers
             //HTMLToPdf(myUri + "Sample.pdf", myUri + "Docs/" + fileName, model, setings, contentRootPath, Param);
             #endregion
 
+            //var path = System.IO.Path.Combine(context.FunctionDirectory, "twinkle.txt");
             var uriBuilder = new UriBuilder("https://nbk-api-dev.azurewebsites.net/Resources/Files/");
             var uriBuilderDoc = new UriBuilder("https://nbk-api-dev.azurewebsites.net/Resources/Files/Docs/");
             var uriBuilderImage = new UriBuilder("https://nbk-api-dev.azurewebsites.net/Resources/");
