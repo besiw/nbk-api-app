@@ -38,7 +38,7 @@ namespace NBKProject.Models.CRUD
 
             dbcontext = new NbkDbEntities();
             var emailDetails = new EmailWorkflow();
-            EmailTemplateENT template = new EmailTemplateCRUD().SelectSingle(Param.WorkflowStepId);
+            EmailTemplateENT template = new EmailTemplateCRUD().SelectSingle(Param.EmailTempId);
             ProjectENT projectDetail = new ProjectCRUD().SelectSingle(Param.ProjectId);
             ContactENT customer = new ContactCRUD().SelectSingle(Convert.ToInt32(projectDetail.CustomerId));
             ContactENT contactPerson = new ContactCRUD().SelectSingle(Convert.ToInt32(projectDetail.ContactPersonId));
@@ -47,7 +47,7 @@ namespace NBKProject.Models.CRUD
 
             emailDetails.EmailFrom = companyProfile.senderEmailAddress;
             emailDetails.EmailTo = customer.Email;
-            if (Param.WorkflowStepId == 1)
+            if (Param.EmailTempId == 1)
             {
                 
                 int price = 0;
@@ -72,7 +72,7 @@ namespace NBKProject.Models.CRUD
             }
             dbcontext = new NbkDbEntities();
             string InspectorName = "";
-            if (Param.WorkflowStepId == 7 || Param.WorkflowStepId == 8)
+            if (Param.EmailTempId == 7 || Param.EmailTempId == 8)
             {
                 if (projectDetail.InspectorId != null)
                 {
@@ -207,6 +207,54 @@ namespace NBKProject.Models.CRUD
 
 
         public ProjectWorkflowENT ProjectWFTwoDone(ProjectWorkflowENT Param)
+        {
+
+            string emailsend = new Helpers.Emailing().EmailHostDetail(Param.EmailTo, Param.EmailFrom, Param.EmailSubject, Param.EmailContent, Param.FileName, Param.RootURL);
+            Param.InsertDate = DateTime.Now;
+            Param = InsertRecordInEmailHistory(Param);
+            return Param;
+        }
+
+        public ProjectWorkflowENT ProjectWFThreeDone(ProjectWorkflowENT Param)
+        {
+
+            Param.InsertDate = DateTime.Now;
+            foreach (var item in Param.FileNames)
+            {
+                Param.FileName = item;
+                Param = InsertRecordInDoc(Param, 3, null, null);
+            }
+            return Param;
+        }
+
+        public ProjectWorkflowENT InsertRecordInDoc(ProjectWorkflowENT Param, int ? otherDoc, int ? PartyTypeId, int ? PartyDocTypeID)
+        {
+            if (Param.FileName == null)
+            {
+                Param.FileName = "";
+            }
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            Doc Data = new Doc
+            {
+                ProjectId = Param.ProjectId,
+                WorkflowId = Param.WorkflowId,
+                WorkflowStepId = Param.WorkflowStepId,
+                Date = Param.InsertDate,
+                PartyId =  null,
+                OtherDocs = otherDoc,
+                FileName = Param.FileName.ToString(),
+                PartyTypeId = PartyTypeId,
+                PartyDocTypeId = PartyDocTypeID
+            };
+
+            dbcontext.Doc.Add(Data);
+            dbcontext.SaveChanges();
+            Param.TaskId = Data.Id;
+            return Param;
+        }
+
+
+        public ProjectWorkflowENT ProjectWFFourDone(ProjectWorkflowENT Param)
         {
 
             string emailsend = new Helpers.Emailing().EmailHostDetail(Param.EmailTo, Param.EmailFrom, Param.EmailSubject, Param.EmailContent, Param.FileName, Param.RootURL);

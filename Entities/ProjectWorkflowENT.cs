@@ -45,7 +45,9 @@ namespace NBKProject.Entities
         public string EmailFrom { get; set; }
         public string AttachmentURL { get; set; }
         public string FileName { get; set; }
+        public List<string> FileNames { get; set; }
         public string RootURL { get; set; }
+        public int EmailTempId { get; set; }
     }
 
     

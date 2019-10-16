@@ -14,6 +14,8 @@ namespace NBKProject.Models.NbkEF
         public string FileName { get; set; }
         public DateTime? Date { get; set; }
         public bool? IsApproved { get; set; }
+        public int? WorkflowId { get; set; }
+        public int? WorkflowStepId { get; set; }
 
         public virtual ContactBook Party { get; set; }
         public virtual DocType PartyDocType { get; set; }

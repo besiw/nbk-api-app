@@ -100,6 +100,61 @@ namespace NBKProject.Controllers
         #endregion
 
 
+        #region Step # 3
+        [HttpPost]
+        public IActionResult ProjectWFThree([FromForm]string request)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+            WrapperProjectWorkflow Param = JsonConvert.DeserializeObject<WrapperProjectWorkflow>(request);
+            IFormFileCollection FilesInRequest = Request.Form.Files;
+            
+            Param.ProjectWorkflow.InsertedBy = isAuthorized.UserProfileID;
+            RequestResponse data = new Services.ProjectWorkflowService().ProjectWFThree(Param.ProjectWorkflow, FilesInRequest, _hostingEnvironment);
+
+            return Ok(data);
+        }
+
+        #endregion
+
+
+        #region Step # 4
+
+        [HttpPost]
+        public IActionResult GetProjectWFFourEmailFormated([FromBody]WrapperProjectWorkflow Param)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+            Param.ProjectWorkflow.InsertedBy = isAuthorized.UserProfileID;
+            WrapperProjectWorkflow data = new Services.ProjectWorkflowService().GetProjectWFFourEmailFormated(Param.ProjectWorkflow);
+
+            return Ok(data);
+        }
+
+        [HttpPost]
+        public IActionResult ProjectWFFour([FromBody]WrapperProjectWorkflow Param)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+            Param.ProjectWorkflow.InsertedBy = isAuthorized.UserProfileID;
+            RequestResponse data = new Services.ProjectWorkflowService().ProjectWFFour(Param.ProjectWorkflow);
+
+            return Ok(data);
+        }
+
+        #endregion
 
         #endregion
     }
