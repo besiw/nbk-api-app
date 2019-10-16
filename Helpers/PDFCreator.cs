@@ -40,13 +40,26 @@ namespace NBKProject.Helpers
             string fileName = title + ".pdf";
             
             CompanyProfileENT setings = new CompanyCRUD().SelectAll();
-            
+
+            #region Testing code
+            //string contentRootPath = "https:\\nbk-api-dev.azurewebsites.net";//_hostingEnvironment.ContentRootPath;
+            //Uri baseUri = new Uri("http://nbk-api-dev.azurewebsites.net");
+            //Uri myUri = new Uri(baseUri, "Resources/Files/");
+            //Param.AttachmentURL = myUri + fileName;
+            //HTMLToPdf(myUri + "Sample.pdf", myUri + "Docs/" + fileName, model, setings, contentRootPath, Param);
+            #endregion
+
+            var uriBuilder = new UriBuilder("https://nbk-api-dev.azurewebsites.net/Resources/Files/");
+            var uriBuilderDoc = new UriBuilder("https://nbk-api-dev.azurewebsites.net/Resources/Files/Docs/");
+            var uriBuilderImage = new UriBuilder("https://nbk-api-dev.azurewebsites.net/Resources/");
+            Uri finalUrl = uriBuilder.Uri;
+            Uri finalUrlDoc = uriBuilderDoc.Uri;
+            Uri finalUrlImage = uriBuilderImage.Uri;
+            //var request = WebRequest.Create(finalUrl);
             //string webRootPath = _hostingEnvironment.WebRootPath;
-            string contentRootPath =  "https:\\nbk-api-dev.azurewebsites.net";//_hostingEnvironment.ContentRootPath;
-            Uri baseUri = new Uri("http://nbk-api-dev.azurewebsites.net");
-            Uri myUri = new Uri(baseUri, "Resources/Files/");
-            Param.AttachmentURL = myUri + fileName;
-            HTMLToPdf(myUri+"Sample.pdf", myUri+"Docs/" + fileName, model, setings, contentRootPath, Param);
+            //string contentRootPath =  "https://nbk-api-dev.azurewebsites.net";//_hostingEnvironment.ContentRootPath;
+            Param.AttachmentURL = "https:\\nbk-api-dev.azurewebsites.net" + "\\Resources\\Files\\" + fileName;
+            HTMLToPdf(finalUrl + "Sample.pdf", finalUrlDoc +  fileName, model, setings, finalUrlImage+"", Param);
             return Param;
         }
 
@@ -274,7 +287,7 @@ namespace NBKProject.Helpers
             var pdfContentByte = stamper.GetOverContent(1);
 
             //var url = @"http://nbk.d.com.pk/Resources/global/images/RuneSignature.jpg";
-            var url = contentRootPath+"\\Resources\\Images\\RuneSignature.jpg";
+            var url = contentRootPath+"/Images/RuneSignature.jpg";
 
             //var uri = new Uri(url);
             //var path = Path.GetFileName(uri.AbsolutePath);
