@@ -24,7 +24,20 @@ namespace NBKProject.Models.CRUD
             List<ServicePerSlabENT> ServicePerSlabListENT = new List<ServicePerSlabENT>();
             ServicePerSlabListENT.AddRange(ServicePerSlabList.Select(x => new ServicePerSlabENT
             { Id = x.Id, RangeFrom = x.RangeFrom, RangeTo = x.RangeTo, Rate = x.Rate, ServiceId = x.ServiceId }).ToList());
-           ServiceENT Data = new ServiceENT()
+
+            List<ServiceWorkflowCategory> ServiceWorkflowCategory = dbcontext.ServiceWorkflowCategory.Where(x => x.ServiceId == Obj.Id).ToList();
+            List<ServiceWorkflowCategoryENT> ServiceWorkflowCategoryENT = new List<ServiceWorkflowCategoryENT>();
+            if (ServiceWorkflowCategory != null)
+            {
+                if (ServiceWorkflowCategory.Count > 0)
+                {
+                    ServiceWorkflowCategoryENT.AddRange(ServiceWorkflowCategory.Select(x => new ServiceWorkflowCategoryENT
+                    { Id = x.Id, WorkflowCategoryId = x.WorkflowCategoryId, ServiceId = x.ServiceId }).ToList());
+                }
+            }
+
+            //ServiceWorkflowCategoryENT
+            ServiceENT Data = new ServiceENT()
             {
                 Id = Obj.Id,
                 Name = Obj.Name,
@@ -32,9 +45,10 @@ namespace NBKProject.Models.CRUD
                 ServiceTypeId = Obj.ServiceTypeId,
                 ServiceChargedAs = Obj.ServiceChargedAs,
                 Rate = Obj.Rate,
-                ServicePerSlabList = ServicePerSlabListENT
+                ServicePerSlabList = ServicePerSlabListENT,
+                ServiceWorkflowCategory = ServiceWorkflowCategoryENT
 
-           };
+            };
 
             
             return Data;
