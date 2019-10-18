@@ -27,6 +27,7 @@ namespace NBKProject.Models.CRUD
 
             List<ServiceWorkflowCategory> ServiceWorkflowCategory = dbcontext.ServiceWorkflowCategory.Where(x => x.ServiceId == Obj.Id).ToList();
             List<ServiceWorkflowCategoryENT> ServiceWorkflowCategoryENT = new List<ServiceWorkflowCategoryENT>();
+
             if (ServiceWorkflowCategory != null)
             {
                 if (ServiceWorkflowCategory.Count > 0)
