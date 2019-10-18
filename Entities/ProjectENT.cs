@@ -98,6 +98,7 @@ namespace NBKProject.Entities
         public string AvvikSendtKommune { get; set; }
         public bool? SkipInspection { get; set; }
         public List<ProjectServiceENT> ProjectService { get; set; }
+        public List<ServiceWorkflowCategoryENT> ProjectServiceWorkflowList { get; set; }
 
     }
 
@@ -109,6 +110,8 @@ namespace NBKProject.Entities
         public int? Quantity { get; set; }
         public string Price { get; set; }
         public bool? IsNewAdded { get; set; }
+
+        
     }
 
 

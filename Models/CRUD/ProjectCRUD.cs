@@ -314,7 +314,7 @@ namespace NBKProject.Models.CRUD
 
             //Adding Default partytype into projectparty table
             List<ServiceWorkflowCategory> DataServiceWorkflowCatagory = GetServiceWorkflowCategoryByServiceID(Obj.ProjectService);
-
+            Obj.ProjectServiceWorkflowList = GetProjectServiceWorkflowList(Obj.Id);
 
             List<PartyType> DefaultPartyTypes = DefaultPartyTypesList(DataServiceWorkflowCatagory);
             ContactBook Dummy = GetDummyContact();
@@ -331,7 +331,26 @@ namespace NBKProject.Models.CRUD
              return Obj;
         }
 
-        
+        public List<ServiceWorkflowCategoryENT> GetProjectServiceWorkflowList(int ProjectID)
+        {
+            List<ServiceWorkflowCategoryENT> ServiceWorkflowCategoryList = new List<ServiceWorkflowCategoryENT>();
+
+            NbkDbEntities db = new NbkDbEntities();
+            List<ProjectService> ProjectServiceList =  ListOfProjectServices(ProjectID);
+
+            List<ServiceWorkflowCategory> ServiceWorkflowCategory = db.ServiceWorkflowCategory.Where(x => ProjectServiceList.Select(y => y.ServiceId).Contains(x.ServiceId)).ToList();
+            if (ServiceWorkflowCategory != null)
+            {
+                if (ServiceWorkflowCategory.Count > 0)
+                {
+                    ServiceWorkflowCategoryList.AddRange(ServiceWorkflowCategory.Select(x => new ServiceWorkflowCategoryENT
+                    { Id = x.Id, WorkflowCategoryId = x.WorkflowCategoryId, ServiceId = x.ServiceId }).ToList());
+                }
+            }
+            return ServiceWorkflowCategoryList;
+        }
+
+
         public void ProjectChecklistsCreate(int? ProjectId)
         {
 
