@@ -210,7 +210,35 @@ namespace NBKProject.Models.CRUD
 
             dbcontext.SaveChanges();
 
+            //Check for new workflow to be added
+            //Delete Previous ServiceWorkflows
+            if (Obj.ServiceWorkflowCategory != null)
+            {
+                DeleteServiceWorkflowCategoryByServiceID(Obj.Id);
+            }
+            //Adding service workflow
+            foreach (var item in Obj.ServiceWorkflowCategory)
+            {
+                dbcontext = new NbkDbEntities();
+                ServiceWorkflowCategory ServiceData = new ServiceWorkflowCategory()
+                {
+                    ServiceId = item.ServiceId,
+                    WorkflowCategoryId = item.WorkflowCategoryId
+                };
+                dbcontext.ServiceWorkflowCategory.Add(ServiceData);
+                dbcontext.SaveChanges();
+                item.Id = ServiceData.Id;
+            }
+
             return Obj;
+        }
+
+        public void DeleteServiceWorkflowCategoryByServiceID(int ServiceID)
+        {
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            List<ServiceWorkflowCategory> Obj = dbcontext.ServiceWorkflowCategory.Where(x => x.ServiceId == ServiceID).ToList();
+            dbcontext.ServiceWorkflowCategory.RemoveRange(Obj);
+            dbcontext.SaveChanges();
         }
 
 
@@ -246,7 +274,7 @@ namespace NBKProject.Models.CRUD
             dbcontext.SaveChanges();
 
             Obj.Id = Data.Id;
-
+            Obj.ServiceWorkflowCategory.ForEach(x => x.ServiceId = Obj.Id);
             //Adding service workflow
             foreach (var item in Obj.ServiceWorkflowCategory)
             {
@@ -258,6 +286,7 @@ namespace NBKProject.Models.CRUD
                 };
                 dbcontext.ServiceWorkflowCategory.Add(ServiceData);
                 dbcontext.SaveChanges();
+                item.Id = ServiceData.Id;
             }
             
 
