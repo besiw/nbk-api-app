@@ -136,6 +136,9 @@ namespace NBKProject.Models.CRUD
                 Kommune = Obj.Kommune,
                 Description = Obj.Description,
             };
+
+            //Get project services and workflow list
+            Data = GetProjectServiceAndWorkflowList(Data);
             return Data;
 
 
@@ -314,7 +317,9 @@ namespace NBKProject.Models.CRUD
 
             //Adding Default partytype into projectparty table
             List<ServiceWorkflowCategory> DataServiceWorkflowCatagory = GetServiceWorkflowCategoryByServiceID(Obj.ProjectService);
-            Obj.ProjectServiceWorkflowList = GetProjectServiceWorkflowList(Obj.Id);
+
+            //Get project services and workflow list
+            Obj = GetProjectServiceAndWorkflowList(Obj);
 
             List<PartyType> DefaultPartyTypes = DefaultPartyTypesList(DataServiceWorkflowCatagory);
             ContactBook Dummy = GetDummyContact();
@@ -331,12 +336,12 @@ namespace NBKProject.Models.CRUD
              return Obj;
         }
 
-        public List<ServiceWorkflowCategoryENT> GetProjectServiceWorkflowList(int ProjectID)
+        public ProjectENT GetProjectServiceAndWorkflowList(ProjectENT Obj)
         {
             List<ServiceWorkflowCategoryENT> ServiceWorkflowCategoryList = new List<ServiceWorkflowCategoryENT>();
 
             NbkDbEntities db = new NbkDbEntities();
-            List<ProjectService> ProjectServiceList =  ListOfProjectServices(ProjectID);
+            List<ProjectServiceENT> ProjectServiceList =  ListOfProjectServices(Obj.Id);
 
             List<ServiceWorkflowCategory> ServiceWorkflowCategory = db.ServiceWorkflowCategory.Where(x => ProjectServiceList.Select(y => y.ServiceId).Contains(x.ServiceId)).ToList();
             if (ServiceWorkflowCategory != null)
@@ -347,7 +352,9 @@ namespace NBKProject.Models.CRUD
                     { Id = x.Id, WorkflowCategoryId = x.WorkflowCategoryId, ServiceId = x.ServiceId }).ToList());
                 }
             }
-            return ServiceWorkflowCategoryList;
+            Obj.ProjectService = ProjectServiceList;
+            Obj.ProjectServiceWorkflowList = ServiceWorkflowCategoryList;
+            return Obj;
         }
 
 
@@ -504,10 +511,30 @@ namespace NBKProject.Models.CRUD
 
             return dbcontext.Service.Where(x => x.Id == serviceID).FirstOrDefault();
         }
-        public List<ProjectService> ListOfProjectServices(int proId)
+        public List<ProjectServiceENT> ListOfProjectServices(int proId)
         {
-            NbkDbEntities dbcontext = new NbkDbEntities();   
-            return dbcontext.ProjectService.Where(x => x.ProjectId == proId).ToList();
+            NbkDbEntities dbcontext = new NbkDbEntities();
+            List<ProjectService> Response = dbcontext.ProjectService.Where(x => x.ProjectId == proId).ToList();
+            //var qweResponse = from PS in dbcontext.ProjectService
+            //                  join S in dbcontext.Service on PS.ServiceId equals S.Id
+            //                  where PS.ProjectId == proId
+            //                  select new { ProjectService = PS, Service = S };
+                                            
+            List < ProjectServiceENT > Data = new List<ProjectServiceENT>();
+            Data.AddRange(Response.Select(x => new ProjectServiceENT
+            {
+                Id = x.Id,
+                IsNewAdded = x.IsNewAdded,
+                Price = x.Price,
+                ProjectId = x.ProjectId,
+                Quantity = x.Quantity,
+                ServiceId = x.ServiceId,
+                Service = x.Service != null ? new ServiceENT { Id = x.Service.Id, Description = x.Service.Description , Name = x.Service.Name, Rate = x.Service.Rate,
+                    ServiceChargedAs = x.Service.ServiceChargedAs, ServiceTypeId = x.Service.ServiceTypeId
+                } : null
+            }).ToList());
+            
+            return Data;
         }
 
         public List<ProjectService> ListOfProjectServicesByWorkflowID(int WorkflowID, int ProjectID)

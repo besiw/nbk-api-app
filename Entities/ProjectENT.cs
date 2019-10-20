@@ -110,8 +110,9 @@ namespace NBKProject.Entities
         public int? Quantity { get; set; }
         public string Price { get; set; }
         public bool? IsNewAdded { get; set; }
+        public  ServiceENT Service { get; set; }
 
-        
+
     }
 
 
