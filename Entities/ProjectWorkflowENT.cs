@@ -36,7 +36,7 @@ namespace NBKProject.Entities
         [Required(ErrorMessage = "{0} is required")]
         public int WorkflowStepId { get; set; }
         public bool IsTransfer { get; set; }
-        public int? TaskId { get; set; }
+        public int? EmailHistoryId { get; set; }
         public DateTime? InsertDate { get; set; }
         public int? InsertedBy { get; set; }
         public string EmailContent { get; set; }

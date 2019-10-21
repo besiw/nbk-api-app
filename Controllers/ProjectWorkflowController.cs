@@ -27,7 +27,23 @@ namespace NBKProject.Controllers
         {
             _hostingEnvironment = hostingEnvironment;
         }
-        
+
+        #region ProjectWorkflowSteps Managment for Dashboard
+
+        [HttpGet]
+        public IActionResult GetProjectWorkflowStep(int ProjectID, int WorkflowID, int WorkflowStepID)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+            WrapperMultiProjectWorkflow data = new Services.ProjectWorkflowService().GetProjectWorkflowStep(ProjectID, WorkflowID, WorkflowStepID);
+            return Ok(data);
+        }
+
+        #endregion
 
         #region Workflow # 1
 

@@ -16,6 +16,40 @@ namespace NBKProject.Models.CRUD
 {
     public class ProjectWorkflowCRUD
     {
+        #region ProjectWorkflowSteps Managment for Dashboard
+
+        public WrapperMultiProjectWorkflow GetProjectWorkflowStep(int ProjectID, int WorkflowID, int WorkflowStepID)
+        {
+            WrapperMultiProjectWorkflow WrapperMultiProjectWorkflow = new WrapperMultiProjectWorkflow();
+            NbkDbEntities dbcontext = new NbkDbEntities();
+
+            List<ProjectWorkflowSteps> Obj = dbcontext.ProjectWorkflowSteps.Where(x => x.ProjectId == ProjectID && x.WorkflowId == WorkflowID &&
+            x.WorkflowStepId == WorkflowStepID).ToList();
+            List<ProjectWorkflowENT> MultiProjectWorkflow = new List<ProjectWorkflowENT>();
+
+            if (Obj != null)
+            {
+                if (Obj.Count > 0)
+                {
+                    MultiProjectWorkflow.AddRange(Obj.Select(i => new ProjectWorkflowENT
+                    {
+                        Id = i.Id,
+                        ProjectId = i.ProjectId,
+                        WorkflowId = i.WorkflowId,
+                        WorkflowStepId = i.WorkflowStepId,
+                        IsTransfer = i.IsTransfer,
+                        EmailHistoryId = i.TaskId,
+                        InsertDate = i.InsertDate,
+                        InsertedBy = i.InsertedBy
+                    }));
+                }                
+            }
+            WrapperMultiProjectWorkflow.MultiProjectWorkflow = MultiProjectWorkflow;
+            return WrapperMultiProjectWorkflow;
+        }
+        
+        #endregion
+
 
         #region Workflow # 1
 
@@ -169,7 +203,7 @@ namespace NBKProject.Models.CRUD
 
             dbcontext.EmailHistory.Add(Data);
             dbcontext.SaveChanges();
-            Param.TaskId = Data.Id;
+            Param.EmailHistoryId = Data.Id;
             return Param;
         }
         public ProjectWorkflowENT WorkflowProjectStepStatusAdd(ProjectWorkflowENT Param)
@@ -183,7 +217,7 @@ namespace NBKProject.Models.CRUD
                 WorkflowId = Param.WorkflowId,
                 WorkflowStepId = Param.WorkflowStepId,
                 IsTransfer = Param.IsTransfer,
-                TaskId = Param.TaskId,
+                TaskId = Param.EmailHistoryId,
                 InsertDate = Param.InsertDate,
                 InsertedBy = Param.InsertedBy
             };
@@ -249,7 +283,7 @@ namespace NBKProject.Models.CRUD
 
             dbcontext.Doc.Add(Data);
             dbcontext.SaveChanges();
-            Param.TaskId = Data.Id;
+            Param.EmailHistoryId = Data.Id;
             return Param;
         }
 

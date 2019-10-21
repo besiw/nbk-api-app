@@ -17,6 +17,19 @@ namespace NBKProject.Services
 {
     public class ProjectWorkflowService
     {
+
+        #region ProjectWorkflowSteps Managment for Dashboard
+
+        public WrapperMultiProjectWorkflow GetProjectWorkflowStep(int ProjectID, int WorkflowID, int WorkflowStepID)
+        {
+            WrapperMultiProjectWorkflow WrapperMultiProjectWorkflow = new WrapperMultiProjectWorkflow();
+
+            WrapperMultiProjectWorkflow = new ProjectWorkflowCRUD().GetProjectWorkflowStep(ProjectID, WorkflowID, WorkflowStepID);
+
+            return WrapperMultiProjectWorkflow;
+        }
+
+        #endregion
         #region Workflow # 1 
 
         #region Step # 1  [Send e-post: Takk for bestillingen Sendt (Send e-mail: Thank you for your order Sent)]
