@@ -47,6 +47,37 @@ namespace NBKProject.Models.CRUD
             WrapperMultiProjectWorkflow.MultiProjectWorkflow = MultiProjectWorkflow;
             return WrapperMultiProjectWorkflow;
         }
+
+        public WrapperMultiProjectWorkflow GetProjectWorkflowCompletedTransferedSteps(int ProjectID, int WorkflowID)
+        {
+            WrapperMultiProjectWorkflow WrapperMultiProjectWorkflow = new WrapperMultiProjectWorkflow();
+            NbkDbEntities dbcontext = new NbkDbEntities();
+
+            List<ProjectWorkflowSteps> Obj = dbcontext.ProjectWorkflowSteps.Where(x => x.ProjectId == ProjectID && 
+            x.WorkflowId == WorkflowID).OrderBy(x=>x.WorkflowStepId).ToList();
+            List<ProjectWorkflowENT> MultiProjectWorkflow = new List<ProjectWorkflowENT>();
+
+            if (Obj != null)
+            {
+                if (Obj.Count > 0)
+                {
+                    MultiProjectWorkflow.AddRange(Obj.Select(i => new ProjectWorkflowENT
+                    {
+                        Id = i.Id,
+                        ProjectId = i.ProjectId,
+                        WorkflowId = i.WorkflowId,
+                        WorkflowStepId = i.WorkflowStepId,
+                        IsTransfer = i.IsTransfer,
+                        EmailHistoryId = i.TaskId,
+                        InsertDate = i.InsertDate,
+                        InsertedBy = i.InsertedBy
+                    }));
+                }
+            }
+            WrapperMultiProjectWorkflow.MultiProjectWorkflow = MultiProjectWorkflow;
+            return WrapperMultiProjectWorkflow;
+        }
+
         
         #endregion
 

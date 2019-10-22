@@ -43,6 +43,19 @@ namespace NBKProject.Controllers
             return Ok(data);
         }
 
+        [HttpGet]
+        public IActionResult GetProjectWorkflowCompletedTransferedSteps(int ProjectID, int WorkflowID)
+        {
+            #region Validate Token
+            RequestResponse isAuthorized = new Authorize().RequestTokenAuth(Request);
+            if (isAuthorized.Success == false) return BadRequest(isAuthorized);
+            #endregion
+
+
+            WrapperMultiProjectWorkflow data = new Services.ProjectWorkflowService().GetProjectWorkflowCompletedTransferedSteps(ProjectID, WorkflowID);
+            return Ok(data);
+        }
+
         #endregion
 
         #region Workflow # 1

@@ -28,7 +28,15 @@ namespace NBKProject.Services
 
             return WrapperMultiProjectWorkflow;
         }
+        public WrapperMultiProjectWorkflow GetProjectWorkflowCompletedTransferedSteps(int ProjectID, int WorkflowID)
+        {
+            WrapperMultiProjectWorkflow WrapperMultiProjectWorkflow = new WrapperMultiProjectWorkflow();
 
+            WrapperMultiProjectWorkflow = new ProjectWorkflowCRUD().GetProjectWorkflowCompletedTransferedSteps(ProjectID, WorkflowID);
+
+            return WrapperMultiProjectWorkflow;
+        }
+        
         #endregion
         #region Workflow # 1 
 
