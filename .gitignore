@@ -15,6 +15,7 @@ pids
 lib-cov
 build
 site
+
 # Coverage directory used by tools like istanbul
 coverage
 
