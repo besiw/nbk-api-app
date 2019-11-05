@@ -8,9 +8,10 @@ phases:
             - 'dotnet publish --output build'
     post_build:
         commands:
-            - 'mv appsettings.Development.json build'
+            - 'zip -r build.zip build'
+            - 'zip deployfiles.zip aws-windows-deployment-manifest.json build.zip'
 artifacts:
     base-directory: build
     files:
-        - '**/*'
+        - 'deployfiles.zip'
     discard-paths: no
