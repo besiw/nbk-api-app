@@ -8,6 +8,9 @@ phases:
             - 'dotnet publish --output staging/site'
     post_build:
         commands:
+            - 'cd staging/site'
+            - 'zip ../site.zip *'
+            - 'cd ../..'
             - 'cp aws-windows-deployment-manifest.json staging'
 artifacts:
     base-directory: 'staging'
