@@ -15,6 +15,7 @@ pids
 lib-cov
 build
 site
+staging
 
 # Coverage directory used by tools like istanbul
 coverage
