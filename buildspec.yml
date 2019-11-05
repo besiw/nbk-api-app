@@ -5,14 +5,12 @@ phases:
             dotnet: 2.2
     build:
         commands:
-            - 'dotnet publish --output site'
+            - 'dotnet publish --output staging/site'
     post_build:
         commands:
-            - 'cd site'
-            - 'zip ../site.zip *'
-            - 'cd ..'
-            - 'zip deployfiles.zip site.zip aws-windows-deployment-manifest.json'
+            - 'cp aws-windows-deployment-manifest.json staging'
 artifacts:
+    base-directory: 'staging'
     files:
-        - 'deployfiles.zip'
+        - '**/*'
     discard-paths: no
