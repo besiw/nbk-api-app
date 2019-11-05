@@ -1,0 +1,16 @@
+version: 0.2
+phases:
+    install:
+        runtime-versions:
+            dotnet: 2.2
+    build:
+        commands:
+            - 'dotnet publish --output build'
+    post_build:
+        commands:
+            - 'mv appsettings.Development.json build'
+artifacts:
+    base-directory: build
+    files:
+        - '**/*'
+    discard-paths: no
