@@ -5,13 +5,13 @@ phases:
             dotnet: 2.2
     build:
         commands:
-            - 'dotnet publish --output build'
+            - 'dotnet publish --output site'
     post_build:
         commands:
-            - 'cd build'
-            - 'zip ../build.zip *'
+            - 'cd site'
+            - 'zip ../site.zip *'
             - 'cd ..'
-            - 'zip deployfiles.zip build.zip aws-windows-deployment-manifest.json'
+            - 'zip deployfiles.zip site.zip aws-windows-deployment-manifest.json'
 artifacts:
     files:
         - 'deployfiles.zip'
